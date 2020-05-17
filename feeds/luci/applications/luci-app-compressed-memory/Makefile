@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_MAINTAINER:=Oever Gonzalez <notengobattery@gmail.com>
 
-LUCI_TITLE:=LuCI support for compressed-memory
+LUCI_TITLE:=LuCI compressed memory  configuration
 LUCI_DESCRIPTION:=\
 This package allows users to configure the compressed memory subsystem. This \
 GUI allows users to setup basic features, such as the compression algorithm, \
@@ -17,9 +17,9 @@ using either zswap, zram or both without to enable or disable the boot \
 scripts. Advanced setup and fine tunning can be archived by using the UCI \
 interface.
 
-LUCI_DEPENDS:=+luci-mod-admin-full +swap-zram-writeback +swap-zswap-cache
+LUCI_DEPENDS:=+luci-base +swap-zram-writeback +swap-zswap-cache
 LUCI_PKGARCH:=all
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 include ../../luci.mk
 
