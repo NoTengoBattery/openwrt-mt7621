@@ -3,9 +3,9 @@ config params 'zram'
 	# This is the main switch for the zram script
 	option enabled	'1'
 	# The compression algorithm to use for the zram device
-	option algorithm	'lz4'
+	option algorithm	'lzo_rle'
 	# Base pool % which is scaled by the expected compression ratio
-	option pool_base	'50.00'
+	option pool_base	'58.75'
 	# Hard pool % which clamp the maximum size of the zram device
 	#   This value is scaled by the worst expected compression ratio
 	option pool_limit	'210'
@@ -22,7 +22,7 @@ config params 'zswap'
 	# Default compression algorithm, the same options for zram
 	#   There is no gain in selecting a better one, because the zpool limits
 	#   the compression ratio of the data
-	option algorithm	'lz4'
+	option algorithm	'lzo_rle'
 	# Size of the memory pool for zswap (if zram is not enabled)
 	option pool	'30.00'
 	# This is the zpool, z3fold guarantees a compression ratio of 3.00
