@@ -5,30 +5,29 @@
 # Licensed to the public under the Apache License 2.0.
 #
 
-KIB=1024
-MIB=1048576
-EXTRA_COMMANDS="status"
-CONFIG=compressed_memory
-ZSWAP_SYSFS=/sys/module/zswap/parameters
-ZSWAP_DEBUGFS=/sys/kernel/debug/zswap
+readonly KIB=1024
+readonly MIB=1048576
+readonly EXTRA_COMMANDS="status"
+readonly CONFIG=compressed_memory
+readonly ZSWAP_SYSFS=/sys/module/zswap/parameters
+readonly ZSWAP_DEBUGFS=/sys/kernel/debug/zswap
 
 config_load $CONFIG
 config_get_bool ZRAM_ENABLED zram enabled '1'
 
 log_msg() {
-	local MESSAGE="$1"
-	logger -s -t zswap -p user.info "$MESSAGE"
+	local MESSAGE=$1
+	logger -s -t "zswap" -p "user.info" "$MESSAGE"
 }
 
 _do_math() {
-	local decimals="$1"
-	local expression="$2"
-	echo | awk 'BEGIN { f = "%.'"$decimals"'f" }
-	  { printf f, '"$expression"'}'
+	local decimals=$1
+	local expression=$2
+	echo | awk '{ f = "%.'"$decimals"'f"; printf f, '"$expression"' }'
 }
 
 ram_getsize() {
-	local kib=$(grep MemTotal /proc/meminfo | xargs | cut -d' ' -f2)
+	local kib=$(awk '/MemTotal/ {print $2}' /proc/meminfo)
 	_do_math 3 "$kib * 1.024"
 }
 
@@ -65,14 +64,14 @@ check_zram() {
 check_zram
 
 _launch_zram() {
-	local success="$1"
+	local success=$1
 	if check_zram; then /etc/init.d/zram stop
 		if [ "x$success" = "xyes" ]; then
 			log_msg "trying to enable zram on success..."
 			env - RUNNABLE=yes ZSWAP_OK=yes /bin/zram restart && \
-			{ printf "$(_zswap_pool)" > $ZSWAP_SYSFS/max_pool_percent; \
-			  pool=$(cat $ZSWAP_SYSFS/max_pool_percent); \
-			  ram_size=$(ram_getsize); pool_b=$(_do_math 0 "$pool * $ram_size * 10"); \
+			{ printf "$(_zswap_pool)" > $ZSWAP_SYSFS/max_pool_percent
+			  pool=$(cat $ZSWAP_SYSFS/max_pool_percent)
+			  ram_size=$(ram_getsize); pool_b=$(_do_math 0 "$pool * $ram_size * 10")
 			  log_msg "maximum pool for zswap: $pool% ($pool_b bytes)"; }
 		else
 			log_msg "trying to enable zram on failure..."
@@ -115,8 +114,8 @@ start() {
 		uci set ${CONFIG}.zswap.zpool="$zpool_is"
 		uci commit; env - /etc/init.d/zswap restart; exit 200
 	fi
-	local algorithm; config_get algorithm zswap algorithm 'lz4'
-	local driver; config_get driver $algorithm driver "$algorithm"
+	local algorithm; config_get algorithm zswap algorithm 'lzo_rle'
+	local driver; config_get driver $algorithm driver 'lzo-rle'
 	printf "$driver" > $ZSWAP_SYSFS/compressor
 	local driver_is=$(cat $ZSWAP_SYSFS/compressor)
 	log_msg "driver for zswap: '$driver_is'"
@@ -168,7 +167,7 @@ status() {
 	local compressor=$(cat $ZSWAP_SYSFS/compressor)
 	local enabled=$(cat $ZSWAP_SYSFS/enabled)
 	local zpool=$(cat $ZSWAP_SYSFS/zpool)
-	local ram_size="$(ram_getsize)"
+	local ram_size=$(ram_getsize)
 	local page_size=4096
 	cat $ZSWAP_DEBUGFS/* | xargs | awk -v mib="$MIB" \
 		-v mb="1000000" \
