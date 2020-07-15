@@ -19,7 +19,7 @@ interface.
 
 LUCI_DEPENDS:=+luci-base +swap-zram-writeback +swap-zswap-cache
 LUCI_PKGARCH:=all
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 include ../../luci.mk
 
