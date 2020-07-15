@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if [ "x$ACTION" = "xifup" -o "x$ACTION" = "xifupdate" ]; then
+	/bin/zram initial_compact
+fi

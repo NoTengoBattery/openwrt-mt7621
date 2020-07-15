@@ -47,7 +47,7 @@ _zswap_pool() {
 	local zpool; config_get zpool zswap zpool 'z3fold'
 	local ratio; config_get ratio $zpool expected_ratio '2.000'
 	log_msg "expected compression ratio for $zpool: $ratio"
-	local scale; config_get scale zswap zswap_scale_pool '25.00'
+	local scale; config_get scale zswap zswap_scale_pool '10.00'
 	log_msg "zswap scale for zram pool: $scale%"
 	local zswap_pool=$(_do_math 0 "$max_pool * $scale / ($ratio * 100)")
 	log_msg "adjusted zswap pool: $zswap_pool%"
@@ -141,7 +141,7 @@ start() {
 		log_msg "error: could not enable the zswap pool"
 		_launch_zram no; exit 3
 	fi
-	local swapiness; config_get swapiness zswap swappiness '85'
+	local swapiness; config_get swapiness zswap swappiness '65'
 	sysctl -w vm.swappiness="$(printf '%.0f' "$swapiness")" > /dev/null
 	swapiness=$(sysctl vm.swappiness)
 	log_msg "system swapiness is $swapiness"
