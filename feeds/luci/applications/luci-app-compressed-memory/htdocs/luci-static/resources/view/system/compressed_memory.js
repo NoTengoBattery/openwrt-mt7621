@@ -33,8 +33,8 @@ function compressors (o) {
 }
 
 function zpool (o) {
-	o.value('zbud',   'zbud (ratio: 2.00)');
-	o.value('z3fold', 'z3fold (ratio: 3.00)');
+	o.value('zbud',   'zbud (ratio: ~2.00)');
+	o.value('z3fold', 'z3fold (ratio: ~3.00)');
 }
 
 return L.view.extend({
@@ -83,7 +83,7 @@ return L.view.extend({
 			o.rmempty	= false;
 
 			o = s.option(form.Value, 'backing_file', _('Backing storage device'),
-				_('This file or device will be used when the data is hard to compress which offer no gain to keep it in memory. Note that the file or device must have the appropiate size (for example, the size of the system RAM) and it\'s contents will be destroyed.'));
+				_('This file or device will be used when the data is hard to compress which offer no gain to keep it in memory. Note that the file or device must have the appropiate size, for example, the size of the RAM disk.'));
 			o.datatype	= 'or(device,file)'
 			o.depends('enabled', '1');
 			o.optional	= true;
@@ -106,7 +106,7 @@ return L.view.extend({
 		if (zs) {
 			s = m.section(form.NamedSection, 'zswap', 'params',
 				_('Compressed swap cache properties'),
-				_('Configure the compressed swap cache. This cache will try to avoid expensive I/O to slow disks or to use the more expensive compressor of zram when the system is under memory pressure.'));
+				_('Configure the compressed swap cache. This cache will try to avoid I/O to slow disks or to use the more expensive compressor of zram.'));
 			s.anonymous	= true;
 
 			o = s.option(form.Flag, 'enabled', _('Enable zswap cache'),
@@ -115,7 +115,7 @@ return L.view.extend({
 			o.rmempty	= false;
 
 			o = s.option(form.ListValue, 'algorithm', _('Compression algorithm'),
-				_('Select the compression algorithm, they are not ordered by speed. There is no gain in choosing a slower algorithm as the zpool limits the maximum compression ratio. Because of this, the default is the best option.'));
+				_('Select the compression algorithm, they are not ordered by speed. There is no gain in choosing a slower algorithm, since the zpool limits the maximum compression ratio. Because of this, the default is the best option.'));
 			compressors(o);
 			o.default	= 'lzo_rle'
 			o.depends('enabled', '1');
@@ -129,7 +129,7 @@ return L.view.extend({
 			o.rmempty	= false;
 
 			o = s.option(form.ListValue, 'zpool', _('Memory allocator'),
-				_('Select the compressed memory allocator (zpool). The zpool can store, at most, this quantity of pages in the space that fits one, thus, it limits the compression ratio of the algorithm.'));
+				_('Select the compressed memory allocator (zpool). The zpool can store, at most, this quantity of pages in the space that uses one.'));
 			zpool(o);
 			o.default	= 'z3fold'
 			o.depends('enabled', '1');
@@ -141,24 +141,24 @@ return L.view.extend({
 			o.rmempty	= false;
 
 			o = s.option(form.Value, 'swappiness', _('System swappiness'),
-				_('This is tendency of the system to swap unused pages instead of dropping file system cache. If your root file system is compressed, such as an SQUASHFS root or UBI overlay, use a higher swappiness. This will allow the system to keep the uncompressed file system in memory, which is useful becuase SQUASHFS and UBI blocks are expensive to uncompress.'));
+				_('The tendency of the system to swap unused pages instead of dropping file system cache. If your file system is compressed, such as SQUASHFS, UBI or zfs, use a slightly higher swappiness.'));
 			o.datatype	= 'and(uinteger,max(100))';
-			o.default	= '85'
+			o.default	= '60'
 			o.depends('advanced', '1');
 			o.rmempty	= false;
 
 			if (zr) {
 				o = s.option(form.ListValue, 'compressor_scale', _('Compressor for zram'),
-					_('Select the compression algorithm for zram when zswap is enabled. The one with higher compression ratio is the first and the one with the lower is the last. You may want to enable a better algorithm that will be used when zswap is getting full or when pages are harder to compress.'));
+					_('Select the compression algorithm for zram when zswap is enabled. The one with higher compression ratio is the first and the one with the lower is the last. Enabling the best compression enables greater memory savings.'));
 				compressors(o);
 				o.default	= 'zstd'
 				o.depends('advanced', '1');
 				o.rmempty	= false;
 
 				o = s.option(form.Value, 'zswap_scale_pool', _('Scale factor'),
-					_('This is the percentage that will underestimate the zswap pool when zram is enabled. This represents the uncompressed data size as a percentage of the zram pool maximum size. The caulculated value will be subtracted from the zram pool in order to honor the user\'s limits.'));
+					_('This is the percentage that will use the zswap pool when zram is enabled. This represents the uncompressed data size as a percentage of the zram\'s pool maximum size.'));
 				o.datatype	= 'and(ufloat,max(75.00))';
-				o.default	= '25.00'
+				o.default	= '10.00'
 				o.depends('advanced', '1');
 				o.rmempty	= false;
 			}
