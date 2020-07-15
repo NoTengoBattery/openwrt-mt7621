@@ -29,7 +29,7 @@ config params 'zswap'
 	#   while zbud guarantees a compression ratio of 2.00
 	option zpool	'z3fold'
 	# Adjust the system swappiness to this value when zswap is enabled
-	option swappiness	'85'
+	option swappiness	'65'
 	# zswap will be adjusted in the presence of zram, and also will modify zram
 	# parameters in order to provide better interoperability and to prevent
 	# excesive memory usage.
@@ -39,7 +39,7 @@ config params 'zswap'
 	# The target underestimate compression ratio for the above compressor
 	option compressor_factor	'0.725'
 	# This will scale the zswap pool to a percentage of the zram pool
-	option zswap_scale_pool	'25.00'
+	option zswap_scale_pool	'10.00'
 
 # Define the compression algorithms:
 #  The expected ratio is what defines the capacity to save RAM, where higher

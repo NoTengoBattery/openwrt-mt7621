@@ -7,7 +7,7 @@
 
 readonly KIB=1024
 readonly MIB=1048576
-readonly EXTRA_COMMANDS="compact status"
+readonly EXTRA_COMMANDS="compact initial_compact status"
 readonly CONFIG=compressed_memory
 
 config_load $CONFIG
@@ -53,7 +53,7 @@ check_zswap() {
 	if [ "x$ZSWAP_ENABLED" = "x1" ]; then
 		config_get ALGORITHM zswap compressor_scale 'zstd'; export ALGORITHM
 		config_get ZSWAP_SCALE zswap compressor_factor '0.725'; export ZSWAP_SCALE
-		config_get ZSWAP_POOL zswap zswap_scale_pool '25.00'; export ZSWAP_POOL
+		config_get ZSWAP_POOL zswap zswap_scale_pool '10.00'; export ZSWAP_POOL
 		config_get ZSWAP_ZPOOL zswap zpool 'z3fold'; export ZSWAP_ZPOOL
 		config_get ZPOOL_RATIO $ZSWAP_ZPOOL expected_ratio '2.000'; export ZPOOL_RATIO
 		config_get DRIVER $ALGORITHM driver "$ALGORITHM"; export DRIVER
@@ -250,7 +250,8 @@ start() {
 	/sbin/swapon -d -p 1000 $zram_dev && \
 		{ log_msg "activated '$zram_dev' for swapping ($rsize MiB)"; } || \
 		{ log_msg "error: cannot enable swap inside the device '$zram_dev'"; exit 6; }
-	ap_if_no_ma_in "/bin/zram compact" "0 */6 * * *	/bin/zram compact" "/etc/crontabs/root"
+	ap_if_no_ma_in "zram compact" "0 */2 * * *	/bin/zram compact" "/etc/crontabs/root"
+	/bin/zram initial_compact &
 }
 
 zram_backing_remove() {
@@ -287,6 +288,10 @@ stop() {
 	done
 }
 
+linux_compact() {
+	sleep 3; printf "1" > /proc/sys/vm/compact_memory; sleep 2
+}
+
 zram_compact() {
 	local base=$(basename "$1")
 	local block_entry=/sys/block/$base
@@ -296,8 +301,7 @@ zram_compact() {
 	log_msg "Compacting zram device '$base'..."
 	printf "idle" > $block_entry/writeback
 	printf "huge" > $block_entry/writeback
-	printf "1" > /proc/sys/vm/compact_memory
-	printf "1" > $block_entry/compact
+	linux_compact; printf "1" > $block_entry/compact; linux_compact
 	local new_mem_used=$(awk '{print $3}' $block_entry/mm_stat)
 	local new_size=$(awk '{print $2}' $block_entry/mm_stat)
 	log_msg "Memory usage reduced by $(_do_math 2 \
@@ -305,6 +309,40 @@ zram_compact() {
 	local new_overhead=$(_do_math 0 "$new_mem_used - $new_size")
 	log_msg "Memory overhead reduced by $(_do_math 2 \
 	  "($old_overhead+1-$new_overhead)*100/($old_overhead+1)")%"
+	printf "all" > $block_entry/idle
+}
+
+zram_initial_compact() {
+	local zram_dev=$1
+	local base=$(basename "$zram_dev")
+	local mfk_final=$(_do_math 0 "$(sysctl -n vm.min_free_kbytes) * 1125 / 1000")
+	local mfk_temporal=$(_do_math 0 "$(ram_getsize) / 10")
+	local s_default=$(sysctl -n vm.swappiness)
+	local wsf_final=$(_do_math 0 "$(sysctl -n vm.watermark_scale_factor) * 5")
+	local lock=/tmp/${base}_initial_compact
+	if mkdir $lock; then
+		# Tune the vm for the initial burst (during boot...)
+		sysctl -w vm.min_free_kbytes=$mfk_temporal
+		sysctl -w vm.swappiness=100
+		sysctl -w vm.watermark_scale_factor=1000
+		sleep 105; zram_compact $zram_dev # 1 min 45 seg
+		sleep 105; zram_compact $zram_dev # 1 min 45 seg
+		sleep 105; zram_compact $zram_dev # 1 min 45 seg
+		# Then, restore the [modified] kernel's defaults after 5 min 15 seg
+		sysctl -w vm.min_free_kbytes=$mfk_final
+		sysctl -w vm.swappiness=$s_default
+		sysctl -w vm.watermark_scale_factor=$wsf_final
+		rm -rf "$lock"
+	else
+		log_msg "An initial compaction is already running for '$base'"
+	fi
+}
+
+initial_compact() {
+	for zram_dev in $(awk '/zram/ {print $1}' /proc/swaps); do
+		RUNNABLE=yes UCI_RUN=yes zram_available $zram_dev || exit $?
+		zram_initial_compact $zram_dev &
+	done
 }
 
 compact() {
