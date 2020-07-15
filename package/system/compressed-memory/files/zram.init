@@ -9,7 +9,7 @@ START=15
 USE_PROCD=1
 NAME=zram
 PROG=/bin/zram
-EXTRA_COMMANDS="stats compact"
+EXTRA_COMMANDS="compact initial_compact stats"
 
 start_service() {
 	procd_open_instance zram
