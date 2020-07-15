@@ -8,7 +8,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=compressed-memory
 PKG_VERSION:=1.0
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_BUILD_DIR := $(BUILD_DIR)/$(PKG_NAME)
 
@@ -99,6 +99,8 @@ define Package/compressed-memory/install
 endef
 
 define Package/swap-zram-writeback/install
+	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
+	$(INSTALL_BIN) ./files/hotplug.script $(1)/etc/hotplug.d/iface/99-zram
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/zram.init $(1)/etc/init.d/zram
 	$(INSTALL_DIR) $(1)/bin
