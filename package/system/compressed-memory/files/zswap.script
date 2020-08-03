@@ -3,7 +3,6 @@
 # Copyright (C) 2019-2020 Oever González <notengobattery@gmail.com>
 #
 # Licensed to the public under the Apache License 2.0.
-#
 
 readonly KIB=1024
 readonly MIB=1048576
