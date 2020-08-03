@@ -3,9 +3,9 @@
 # Copyright (C) 2019-2020 Oever González <notengobattery@gmail.com>
 #
 # Licensed to the public under the Apache License 2.0.
-#
 
 START=16
+STOP=99
 USE_PROCD=1
 NAME=zswap
 PROG=/bin/zswap
