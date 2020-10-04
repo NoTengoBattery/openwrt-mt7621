@@ -126,6 +126,7 @@ CONFIG_PACKAGE_kmod-crypto-user=m
 CONFIG_PACKAGE_kmod-crypto-wq=m
 CONFIG_PACKAGE_kmod-crypto-xcbc=m
 CONFIG_PACKAGE_kmod-crypto-xts=m
+CONFIG_PACKAGE_kmod-crypto-zstd=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-dns[^= ]* --- --- --- #
@@ -294,6 +295,7 @@ CONFIG_PACKAGE_kmod-lib-crc32c=m
 CONFIG_PACKAGE_kmod-lib-crc-ccitt=m
 CONFIG_PACKAGE_kmod-lib-crc-itu-t=m
 CONFIG_PACKAGE_kmod-lib-lz4=m
+CONFIG_PACKAGE_kmod-lib-lz4hc=m
 CONFIG_PACKAGE_kmod-lib-lzo=m
 CONFIG_PACKAGE_kmod-lib-raid6=m
 CONFIG_PACKAGE_kmod-lib-textsearch=m
@@ -802,6 +804,7 @@ CONFIG_PACKAGE_ca-certificates=y
 
 
 # --- --- --- CONFIG_PACKAGE_chrt --- --- --- #
+CONFIG_PACKAGE_chrt=y
 
 
 # --- --- --- CONFIG_PACKAGE_ethtool --- --- --- #
@@ -841,6 +844,7 @@ CONFIG_PACKAGE_kmod-fs-msdos=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-io-schedulers --- --- --- #
+CONFIG_PACKAGE_kmod-io-schedulers=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-usb-net-asix[^= ]* --- --- --- #
@@ -871,6 +875,7 @@ CONFIG_PACKAGE_luci-app-advanced-reboot=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-compressed-memory --- --- --- #
+CONFIG_PACKAGE_luci-app-compressed-memory=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-sqm --- --- --- #
