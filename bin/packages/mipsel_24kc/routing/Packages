@@ -1,0 +1,33 @@
+Package: batctl-default
+Version: 2020.3-1
+Depends: libc, libnl-tiny, librt
+Provides: batctl
+Alternatives: 200:/usr/sbin/batctl:/usr/libexec/batctl-default
+License: GPL-2.0-only ISC MIT
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 41506
+Filename: batctl-default_2020.3-1_mipsel_24kc.ipk
+Size: 42592
+SHA256sum: 45c9171df3ecc52dc21654175f991e6dc755f770839107e54cd6f63490e9ad28
+Description:  batctl is a more intuitive managment utility for B.A.T.M.A.N.-Advanced.
+ It is an easier method for configuring batman-adv and provides some
+ additional tools for debugging as well. This package builds
+ version 2020.3 of the user space utility.
+ Standard subcommands for configuration and online debugging are enabled.
+
+Package: hnetd-openssl
+Version: 2016-06-28-606d7e904603ad8792ac1a7ba825618df97b5a4e-3
+Depends: libc, odhcpd, odhcp6c, netifd, libopenssl1.1
+License: GPL-2.0
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 120168
+Filename: hnetd-openssl_2016-06-28-606d7e904603ad8792ac1a7ba825618df97b5a4e-3_mipsel_24kc.ipk
+Size: 121103
+SHA256sum: 89f7439a797cf04ce5089f72fcc0e316e508865e5e276a5ae41e364111eddb1b
+Description:  This package provides a daemon which implementats distributed prefix assignment
+ and service discovery for a home network consisting of multiple routers
+ connected to multiple service providers. It provides a netifd protocol "hnet"
+ for use in /etc/config/network.
+
