@@ -126,6 +126,7 @@ CONFIG_PACKAGE_kmod-crypto-user=m
 CONFIG_PACKAGE_kmod-crypto-wq=m
 CONFIG_PACKAGE_kmod-crypto-xcbc=m
 CONFIG_PACKAGE_kmod-crypto-xts=m
+CONFIG_PACKAGE_kmod-crypto-zstd=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-dns[^= ]* --- --- --- #
@@ -294,6 +295,7 @@ CONFIG_PACKAGE_kmod-lib-crc32c=m
 CONFIG_PACKAGE_kmod-lib-crc-ccitt=m
 CONFIG_PACKAGE_kmod-lib-crc-itu-t=m
 CONFIG_PACKAGE_kmod-lib-lz4=m
+CONFIG_PACKAGE_kmod-lib-lz4hc=m
 CONFIG_PACKAGE_kmod-lib-lzo=m
 CONFIG_PACKAGE_kmod-lib-raid6=m
 CONFIG_PACKAGE_kmod-lib-textsearch=m
@@ -400,6 +402,17 @@ CONFIG_PACKAGE_kmod-sit=m
 CONFIG_PACKAGE_kmod-sound-core=m
 CONFIG_PACKAGE_kmod-sound-dummy=m
 CONFIG_PACKAGE_kmod-sound-ens1371=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-analog=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-ca0110=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-ca0132=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-cirrus=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-cmedia=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-conexant=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-hdmi=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-idt=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-realtek=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-si3054=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-via=m
 CONFIG_PACKAGE_kmod-sound-hda-core=m
 CONFIG_PACKAGE_kmod-sound-i8x0=m
 CONFIG_PACKAGE_kmod-sound-mpu401=m
@@ -529,6 +542,7 @@ CONFIG_PACKAGE_kmod-usb-serial-sierrawireless=m
 CONFIG_PACKAGE_kmod-usb-serial-simple=m
 CONFIG_PACKAGE_kmod-usb-serial-ti-usb=m
 CONFIG_PACKAGE_kmod-usb-serial-visor=m
+CONFIG_PACKAGE_kmod-usb-serial-wwan=m
 CONFIG_PACKAGE_kmod-usb-serial-xr_usb_serial_common=m
 CONFIG_PACKAGE_kmod-usb-storage=m
 CONFIG_PACKAGE_kmod-usb-storage-extras=m
@@ -790,6 +804,7 @@ CONFIG_PACKAGE_ca-certificates=y
 
 
 # --- --- --- CONFIG_PACKAGE_chrt --- --- --- #
+CONFIG_PACKAGE_chrt=y
 
 
 # --- --- --- CONFIG_PACKAGE_comgt --- --- --- #
@@ -833,6 +848,7 @@ CONFIG_PACKAGE_kmod-fs-msdos=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-io-schedulers --- --- --- #
+CONFIG_PACKAGE_kmod-io-schedulers=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-usb-net-asix[^= ]* --- --- --- #
@@ -863,6 +879,7 @@ CONFIG_PACKAGE_luci-app-advanced-reboot=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-compressed-memory --- --- --- #
+CONFIG_PACKAGE_luci-app-compressed-memory=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-sqm --- --- --- #
