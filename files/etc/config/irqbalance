@@ -1,0 +1,3 @@
+config irqbalance irqbalance
+	option enabled	'1'
+	option interval	'300'
