@@ -1,0 +1,42 @@
+Package: batctl-default
+Version: 2020.3-1
+Depends: libc, libnl-tiny, librt
+Provides: batctl
+Alternatives: 200:/usr/sbin/batctl:/usr/libexec/batctl-default
+Source: feeds/routing/batctl
+SourceName: batctl-default
+License: GPL-2.0-only ISC MIT
+LicenseFiles: LICENSES/preferred/GPL-2.0 LICENSES/preferred/MIT LICENSES/deprecated/ISC
+Section: net
+SourceDateEpoch: 1598618404
+Maintainer: Simon Wunderlich <sw@simonwunderlich.de>
+Architecture: mipsel_24kc
+Installed-Size: 41507
+Filename: batctl-default_2020.3-1_mipsel_24kc.ipk
+Size: 42599
+SHA256sum: 08b033decf00bba6999fe0cfaa56f27528e40a00a363f3462259e72fba64e71a
+Description:  batctl is a more intuitive managment utility for B.A.T.M.A.N.-Advanced.
+ It is an easier method for configuring batman-adv and provides some
+ additional tools for debugging as well. This package builds
+ version 2020.3 of the user space utility.
+ Standard subcommands for configuration and online debugging are enabled.
+
+Package: hnetd-openssl
+Version: 2016-06-28-606d7e904603ad8792ac1a7ba825618df97b5a4e-3
+Depends: libc, odhcpd, odhcp6c, netifd, libopenssl1.1
+Source: feeds/routing/hnetd
+SourceName: hnetd-openssl
+License: GPL-2.0
+Section: net
+SourceDateEpoch: 1597174666
+Maintainer: Steven Barth <cyrus@openwrt.org>
+Architecture: mipsel_24kc
+Installed-Size: 120165
+Filename: hnetd-openssl_2016-06-28-606d7e904603ad8792ac1a7ba825618df97b5a4e-3_mipsel_24kc.ipk
+Size: 121124
+SHA256sum: 51ecb0e553633792cea1279a6863def99f055575237f114fc361ea31ed0ec702
+Description:  This package provides a daemon which implementats distributed prefix assignment
+ and service discovery for a home network consisting of multiple routers
+ connected to multiple service providers. It provides a netifd protocol "hnet"
+ for use in /etc/config/network.
+

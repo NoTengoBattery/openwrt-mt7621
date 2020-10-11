@@ -1,0 +1,12 @@
+Package: iptables-mod-rtpengine
+Version: mr8.5.1.2-1
+Depends: libc, libxtables12
+License: GPL-3.0
+Section: net
+Architecture: mipsel_24kc
+Installed-Size: 1511
+Filename: iptables-mod-rtpengine_mr8.5.1.2-1_mipsel_24kc.ipk
+Size: 2278
+SHA256sum: b0c2a4eaacec0ab24c376c53f47904f103ee165b3fa341436efbe4964bb6ad77
+Description:  Sipwise rtpengine iptables extension
+
