@@ -1,0 +1,6 @@
+RAMPIS/MT7621 Custom ROM v0.01
+=========
+Based on OpenWrt commit 156b72b9aa36353f0c45983c9a49c83c49865a41
+If you want to apply the patches, first checkout the above commit and git-apply
+the patches accordingly. After that, you can build, update and modify your copy.
+
