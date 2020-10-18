@@ -1,0 +1,38 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt-mt7621/issues
+
+. /lib/functions.sh
+. /lib/ntb/irq.sh
+
+set_file() {
+  local _NVAL="$1"
+  local _FILE="$2"
+  printf "$_NVAL" > "$_FILE"
+}
+
+fix_wlan_path() {
+  RADIO0=$(uci get wireless.radio0.path)
+  RADIO1=$(uci get wireless.radio1.path)
+  if [ "x$RADIO0" = "xFIXME" ]; then
+    FIX0=yes
+  fi
+  if [ "x$RADIO1" = "xFIXME" ]; then
+    FIX1=yes
+  fi
+  case "$(board_name)" in
+  zbtlink,zbt-wg3526-16m|\
+  zbtlink,zbt-wg3526-32m)
+    if [ "x$FIX0" = "xyes" ]; then
+      uci set wireless.radio0.path='1e140000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0'
+    fi
+    if [ "x$FIX1" = "xyes" ]; then
+      uci set wireless.radio1.path='1e140000.pcie/pci0000:00/0000:00:01.0/0000:02:00.0'
+    fi
+  ;;
+  esac
+}
+
+boot() {
+  fix_wlan_path
+}
