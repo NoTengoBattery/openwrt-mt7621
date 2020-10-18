@@ -1,0 +1,18 @@
+## 00-admin
+##
+## This file allows the users from the root group to elevate privileges using
+## sudo (with password).
+#%root ALL=(ALL) ALL
+
+##
+## This file allows the users from the sudo group to elevate privileges using
+## sudo (with password).
+%sudo ALL=(ALL) ALL
+
+##
+## Also, to allow users to use /usr/bin/nano as an editor for visudo
+Defaults editor=/usr/bin/nano
+
+##
+## Also, to force a "secure PATH" for users executing sudo
+Defaults secure_path="/usr/sbin:/usr/bin:/sbin:/bin"
