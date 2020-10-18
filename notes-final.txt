@@ -1,0 +1,6 @@
+WG3526 Custom ROM v1.00
+=========
+Based on OpenWrt commit 7f5f738466aca2cd8f5daf73f68f4d32b70d43b5
+If you want to apply the patches, first checkout the above commit and git-apply
+the patches accordingly. After that, you can build, update and modify your copy.
+
