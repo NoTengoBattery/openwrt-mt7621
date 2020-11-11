@@ -6,10 +6,10 @@
 
 readonly KIB=1024
 readonly MIB=1048576
-readonly EXTRA_COMMANDS="status"
 readonly CONFIG=compressed_memory
 readonly ZSWAP_SYSFS=/sys/module/zswap/parameters
 readonly ZSWAP_DEBUGFS=/sys/kernel/debug/zswap
+extra_command "status" "Show statistics for zswap"
 
 config_load $CONFIG
 config_get_bool ZRAM_ENABLED zram enabled '1'
