@@ -9,7 +9,7 @@ STOP=99
 USE_PROCD=1
 NAME=zswap
 PROG=/bin/zswap
-EXTRA_COMMANDS="stats"
+extra_command "stats" "Show statistics for zswap"
 
 start_service() {
   procd_open_instance zswap

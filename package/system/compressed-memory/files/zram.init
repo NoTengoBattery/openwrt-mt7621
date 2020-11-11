@@ -9,7 +9,8 @@ STOP=99
 USE_PROCD=1
 NAME=zram
 PROG=/bin/zram
-EXTRA_COMMANDS="compact stats"
+extra_command "compact" "Compact the zram memory block"
+extra_command "stats" "Show statistics for zram"
 
 start_service() {
 	procd_open_instance zram

@@ -6,8 +6,10 @@
 
 readonly KIB=1024
 readonly MIB=1048576
-readonly EXTRA_COMMANDS="compact initial_compact status"
 readonly CONFIG=compressed_memory
+extra_command "compact" "Compact the zram memory block"
+extra_command "initial_compact" "Trigger an initial compaction process (used during boot)"
+extra_command "status" "Show statistics for zram"
 
 config_load $CONFIG
 config_get ALGORITHM zram algorithm 'lzo_rle'
