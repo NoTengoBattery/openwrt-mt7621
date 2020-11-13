@@ -15,12 +15,13 @@ DEVICE_TYPE?=router
 # Default packages - the really basic set
 DEFAULT_PACKAGES:=\
 	base-files \
+	busybox \
 	ca-bundle \
 	dropbear \
 	fstools \
 	libc \
 	libgcc \
-	libustream-wolfssl \
+	libustream-openssl \
 	logd \
 	mtd \
 	netifd \
@@ -46,13 +47,13 @@ DEFAULT_PACKAGES.nas:=\
 	mdadm
 # For router targets
 DEFAULT_PACKAGES.router:=\
-	dnsmasq \
+	dnsmasq-full \
 	firewall \
 	ip6tables \
 	iptables \
 	kmod-ipt-offload \
 	odhcp6c \
-	odhcpd-ipv6only \
+	odhcpd \
 	ppp \
 	ppp-mod-pppoe
 
