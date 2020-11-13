@@ -1,0 +1,24 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+NAME=ServiceMonitor
+PIDFILE=/var/run/$NAME.pid
+PROG=/bin/$NAME
+START=00
+STOP=10
+USE_PROCD=1
+
+start_service() {
+  procd_open_instance $NAME
+  procd_set_param command $PROG
+  procd_append_param command procd
+  procd_append_param command $PIDFILE
+  procd_append_param command 20m
+  procd_append_param command 10m
+  procd_set_param respawn
+  procd_set_param stdout 0
+  procd_set_param stderr 0
+  procd_set_param pidfile $PIDFILE
+  procd_close_instance
+}
