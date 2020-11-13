@@ -2,7 +2,7 @@
 
 / {
 	compatible = "zbtlink,zbt-wg3526-16m", "zbtlink,zbt-wg3526", "mediatek,mt7621-soc";
-	model = "Zbtlink ZBT-WG3526 (16M)";
+	model = "Zbtlink ZBT-WG3526 (Glucose)";
 };
 
 &firmware {
