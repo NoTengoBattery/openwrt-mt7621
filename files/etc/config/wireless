@@ -1,0 +1,34 @@
+# This default wireless file should work with all targets that have a dual band
+# wireless radio configuration.
+
+config wifi-device radio0
+	option channel		'auto'
+	option htmode		'HT40'
+	option hwmode		'11g'
+	option noscan		'1'
+	option path		'FIXME'
+	option type		'mac80211'
+
+config wifi-iface wifinet0
+	option device		'radio0'
+	option disabled		'0'
+	option encryption	'sae-mixed'
+	option mode		'ap'
+	option network		'lan'
+	option ssid		'DEFAULT'
+
+config wifi-device radio1
+	option channel		'auto'
+	option htmode		'VHT80'
+	option hwmode		'11a'
+	option noscan		'1'
+	option path		'FIXME'
+	option type		'mac80211'
+
+config wifi-iface wifinet1
+	option device		'radio1'
+	option disabled		'0'
+	option encryption	'sae-mixed'
+	option mode		'ap'
+	option network		'lan'
+	option ssid		'DEFAULT'
