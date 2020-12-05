@@ -1,0 +1,17 @@
+Package: iptables-mod-rtpengine
+Version: mr8.5.2.3-1
+Depends: libc, libxtables12
+Source: feeds/telephony/net/rtpengine
+SourceName: iptables-mod-rtpengine
+License: GPL-3.0
+LicenseFiles: LICENSE
+Section: net
+SourceDateEpoch: 1606153172
+Maintainer: Sebastian Kemper <sebastian_ml@gmx.net>
+Architecture: mipsel_24kc
+Installed-Size: 1500
+Filename: iptables-mod-rtpengine_mr8.5.2.3-1_mipsel_24kc.ipk
+Size: 2274
+SHA256sum: 9229291a4337ca9e1e41c532c16af72da9baffd461a317dec7897f4776b6ccbd
+Description:  Sipwise rtpengine iptables extension
+
