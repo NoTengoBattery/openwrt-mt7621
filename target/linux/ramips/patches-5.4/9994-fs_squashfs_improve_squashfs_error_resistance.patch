@@ -1,0 +1,185 @@
+From: Oever González <notengobattery@gmail.com>
+Subject: [PATCH] fs: SQUASHFS: improve SQUASHFS error resistance
+Date: Sat, 25 Jul 2020 18:49:31 -0600
+
+This patch greatly improves the SQUASHFS's ability to deal with read errors. By
+applying this patch, a corrupted page in the cache will not longer lead to a
+persistent failure in decompression, at least most of the times.
+
+Signed-off-by: Oever González <notengobattery@gmail.com>
+---
+--- a/fs/squashfs/block.c
++++ b/fs/squashfs/block.c
+@@ -65,6 +65,42 @@ static struct buffer_head *get_block_length(struct super_block *sb,
+ 	return bh;
+ }
+ 
++/*
++ * Kill the pages if an error is found, this will try to evict them from the
++ * page cache forcing the kernel to read again the device, hopping that the read
++ * error is just transitory.
++ *
++ * This efectively cleans the "back" cache. Normal file systems will do this,
++ * since this makes them more resistant to sparse or transitory I/O failures.
++ *
++ */
++static inline void __squashfs_kill_pages(struct buffer_head **bh, int quantity)
++{
++	int index = 0, total_pages = 0;
++	struct buffer_head *bh_head;
++	struct buffer_head *bh_current;
++
++	for (index = 0; index < quantity; index++) {
++		bh_head = bh[index];
++		bh_current = bh[index];
++
++		do {
++			struct page *bh_page = bh_current->b_page;
++
++			lock_page(bh_page);
++			delete_from_page_cache(bh_page);
++			ClearPageUptodate(bh_page);
++			SetPageError(bh_page);
++			total_pages++;
++			unlock_page(bh_page);
++
++			clear_buffer_uptodate(bh_current);
++			bh_current = bh_current->b_this_page;
++		} while (bh_current != bh_head);
++	}
++
++	WARNING("killed %d pages, %d buffer heads\n", total_pages, quantity);
++}
+ 
+ /*
+  * Read and decompress a metadata block or datablock.  Length is non-zero
+@@ -75,8 +111,8 @@ static struct buffer_head *get_block_length(struct super_block *sb,
+  * generated a larger block - this does occasionally happen with compression
+  * algorithms).
+  */
+-int squashfs_read_data(struct super_block *sb, u64 index, int length,
+-		u64 *next_index, struct squashfs_page_actor *output)
++static inline int __squashfs_read_data(struct super_block *sb, u64 index,
++		int length, u64 *next_index, struct squashfs_page_actor *output)
+ {
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 	struct buffer_head **bh;
+@@ -194,11 +230,51 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+ 
+ block_release:
+ 	for (; k < b; k++)
+-		put_bh(bh[k]);
++		brelse(bh[k]);
+ 
+ read_failure:
+-	ERROR("squashfs_read_data failed to read block 0x%llx\n",
+-					(unsigned long long) index);
++	__squashfs_kill_pages(bh, b);
+ 	kfree(bh);
+ 	return -EIO;
+ }
++
++/*
++ * If some kind of error is detected, block into this loop rather than crashing
++ * the process that requested the data, since it can be `init` and crashing it
++ * will lead to a kernel panic. If the read still failing, the process is doomed
++ * to crash anyway.
++ *
++ * This only makes SQUASHFS more error resistant by avoiding the poisoning of
++ * the "front" cache if the first attempt failed.
++ *
++ */
++int squashfs_read_data(struct super_block *sb, u64 index, int length,
++		u64 *next_index, struct squashfs_page_actor *output)
++{
++	int ret = 0, attempts = 0;
++	unsigned long long block = (unsigned long long) index;
++	u64 saved_next_index;
++
++	if (next_index)
++		saved_next_index = *next_index;
++
++	ret = __squashfs_read_data(sb, index, length, next_index, output);
++
++	while (ret < 0 && attempts < 5) {  // Retry 5 times, a total of 6 attempts
++		attempts++;
++		TRACE("failed to read block [%llx], retry attempt %d\n",
++			block, attempts);
++		if (next_index)
++			*next_index = saved_next_index;
++		ret = __squashfs_read_data(sb, index, length, next_index, output);
++	}
++
++	if (attempts > 0 && ret >= 0)
++		TRACE("read_data: success after %d attempts to read block [%llx]\n",
++			 attempts, block);
++	else if (attempts > 0 && ret < 0)
++		ERROR("read_data: failed after %d attempts to read block [%llx]\n",
++			  attempts + 1);
++
++	return ret;
++}
+--- a/fs/squashfs/cache.c
++++ b/fs/squashfs/cache.c
+@@ -112,8 +112,12 @@ struct squashfs_cache_entry *squashfs_cache_get(struct super_block *sb,
+ 
+ 			spin_lock(&cache->lock);
+ 
+-			if (entry->length < 0)
++			if (entry->length < 0) {
+ 				entry->error = entry->length;
++				WARNING("Invalidated %s cache entry [%llx]\n", cache->name,
++					entry->block);
++				entry->block = SQUASHFS_INVALID_BLK;
++			}
+ 
+ 			entry->pending = 0;
+ 
+--- a/fs/squashfs/decompressor_multi.c
++++ b/fs/squashfs/decompressor_multi.c
+@@ -189,8 +189,6 @@ int squashfs_decompress(struct squashfs_sb_info *msblk, struct buffer_head **bh,
+ 	res = msblk->decompressor->decompress(msblk, decomp_stream->stream,
+ 		bh, b, offset, length, output);
+ 	put_decomp_stream(decomp_stream, stream);
+-	if (res < 0)
+-		ERROR("%s decompression failed, data probably corrupt\n",
+-			msblk->decompressor->name);
++
+ 	return res;
+ }
+--- a/fs/squashfs/decompressor_multi_percpu.c
++++ b/fs/squashfs/decompressor_multi_percpu.c
+@@ -82,10 +82,6 @@ int squashfs_decompress(struct squashfs_sb_info *msblk, struct buffer_head **bh,
+ 		offset, length, output);
+ 	put_cpu_ptr(stream);
+ 
+-	if (res < 0)
+-		ERROR("%s decompression failed, data probably corrupt\n",
+-			msblk->decompressor->name);
+-
+ 	return res;
+ }
+ 
+--- a/fs/squashfs/decompressor_single.c
++++ b/fs/squashfs/decompressor_single.c
+@@ -70,10 +70,6 @@ int squashfs_decompress(struct squashfs_sb_info *msblk, struct buffer_head **bh,
+ 		offset, length, output);
+ 	mutex_unlock(&stream->mutex);
+ 
+-	if (res < 0)
+-		ERROR("%s decompression failed, data probably corrupt\n",
+-			msblk->decompressor->name);
+-
+ 	return res;
+ }
+ 
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -452,6 +452,7 @@ static int __init init_squashfs_fs(void)
+ 	}
+ 
+ 	pr_info("version 4.0 (2009/01/31) Phillip Lougher\n");
++	pr_info("patched 4.0 (2020/11/10) Oever Gonzalez\n");
+ 
+ 	return 0;
+ }
