@@ -1,0 +1,21 @@
+
+
+# --- --- --- ~ Start of the global configuration options ~ --- --- --- #
+
+CONFIG_BUSYBOX_CUSTOM=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUILD_LOG=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_DEVEL=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_IMAGEOPT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_KERNEL_BUILD_DOMAIN="gmail.com"
+CONFIG_KERNEL_BUILD_USER="notengobattery"
+CONFIG_KERNEL_CC_OPTIMIZE_FOR_PERFORMANCE=y
+CONFIG_TARGET_OPTIONS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TOOLCHAINOPTS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_VERSIONOPT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
