@@ -1,0 +1,125 @@
+#!/bin/bash
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+# Initialize all of the readonly variables
+readonly ARG1="${1:-shell}"
+readonly ARG2="${2:-/var/run/ServiceMonitor.pid}"
+readonly ARG3="${3:-9m}"
+readonly ARG4="${4:-1m}"
+readonly PROCD_PID="$(cat "$ARG2")"
+
+# Initialize all the priority, OOM and scheduling policies as readonly variables
+readonly PRI_LV5=-20 ; readonly OOM_LV5=-1000 ; readonly SCH_NAN=no
+readonly PRI_LV4=-16 ; readonly OOM_LV4=-495  ; readonly SCH_IDL=i
+readonly PRI_LV3=-10 ; readonly OOM_LV3=-200  ; readonly SCH_BAT=b
+readonly PRI_LV2=-5  ; readonly OOM_LV2=-58   ; readonly SCH_OTH=o
+readonly PRI_LV1=-1  ; readonly OOM_LV1=-10   ; readonly SCH_RRO=rR
+readonly PRI_ZRO=0   ; readonly OOM_ZRO=0     ; readonly SCH_RRR=r
+readonly PRI_NAN=no  ; readonly OOM_NAN=no    ; readonly SCH_DEA=d
+readonly PRI_TI1=1   ; readonly OOM_TI1=10    ; readonly SCH_FIF=fR
+readonly PRI_TI2=5   ; readonly OOM_TI2=58    ;
+readonly PRI_TI3=10  ; readonly OOM_TI3=200   ;
+readonly PRI_TI4=16  ; readonly OOM_TI4=495   ;
+readonly PRI_TI5=20  ; readonly OOM_TI5=1000  ;
+
+# Initialize all the helper functions that controll the script behaviour
+logme(){
+  logger -s -t "ServiceMonitor.$ARG1" -p 'daemon.notice' "$1"
+}
+reload(){
+  logme "Reloading on SIGHUP..."
+  kill -n 9 $(jobs -p)
+  return 0
+}
+stop(){
+  logme "Ending this session..."
+  kill -n 9 $(jobs -p)
+  exit 0
+}
+wait_sleep(){
+  local time="$1"
+  sleep $time &
+  local SLEEP_PID=$!
+  wait "$SLEEP_PID"
+}
+
+# Detect the requiered tools to perform the service monitoring
+RENICE_BIN="$(which renice)"
+CHRT_BIN="$(which chrt)"
+if [ "x$RENICE_BIN" = "x" ]; then
+  logme "No 'renice' executable found! Niceness changes will not apply."
+  RENICE_BIN=:
+fi
+if [ "x$CHRT_BIN" = "x" ]; then
+  logme "No 'chrt' executable found! Scheduling policy changes will not apply."
+  CHRT_BIN=:
+fi
+
+# - Higher level -> network core: wifi, dns, dhcp
+# - Mid level -> interactive and batch: cron, sshd, httpd, logger
+# - Normal tier -> non-interactive batch: swapping, compaction, servers
+# - Lower tier -> non-crucial, kill first: RNG, DLNA, TCP dump
+# Process name | Absolute niceness | OOM Score | Policy | Priority
+declare -a PROCESSES=(
+  'ksoftirq'        "$PRI_LV3" "$OOM_NAN" "$SCH_BAT"  "0"
+
+  '(hostap|wpa)d'   "$PRI_LV2" "$OOM_NAN" "$SCH_OTH"  "0"
+  'dhcpd'           "$PRI_LV2" "$OOM_NAN" "$SCH_OTH"  "0"
+  'dnsmasq'         "$PRI_LV2" "$OOM_LV2" "$SCH_OTH"  "0"
+  'mwan3'           "$PRI_LV2" "$OOM_LV2" "$SCH_OTH"  "0"
+  'nextdns'         "$PRI_LV2" "$OOM_LV2" "$SCH_OTH"  "0"
+  'unbound'         "$PRI_LV2" "$OOM_LV2" "$SCH_OTH"  "0"
+  'wpa_supplicant'  "$PRI_LV2" "$OOM_NAN" "$SCH_OTH"  "0"
+
+  'askfirst'        "$PRI_LV1" "$OOM_LV1" "$SCH_OTH"  "0"
+  'cron'            "$PRI_LV1" "$OOM_LV1" "$SCH_BAT"  "0"
+  'dropbear'        "$PRI_LV1" "$OOM_LV1" "$SCH_OTH"  "0"
+  'httpd'           "$PRI_LV1" "$OOM_LV1" "$SCH_BAT"  "0"
+  'log(d|read)'     "$PRI_LV1" "$OOM_LV1" "$SCH_BAT"  "0"
+  'nginx'           "$PRI_LV1" "$OOM_LV1" "$SCH_BAT"  "0"
+  'sshd'            "$PRI_LV1" "$OOM_LV1" "$SCH_OTH"  "0"
+
+  '(sm|nm|n)bd'     "$PRI_TI1" "$OOM_TI1" "$SCH_BAT"  "0"
+  'avahi'           "$PRI_TI1" "$OOM_TI1" "$SCH_BAT"  "0"
+  'dbus'            "$PRI_TI1" "$OOM_TI1" "$SCH_BAT"  "0"
+  'ModemManager'    "$PRI_ZRO" "$OOM_LV1" "$SCH_OTH"  "0"
+  'kcompactd[0-9]+' "$PRI_ZRO" "$OOM_NAN" "$SCH_BAT"  "0"
+  'kswapd[0-9]+'    "$PRI_ZRO" "$OOM_NAN" "$SCH_BAT"  "0"
+  'wsdd'            "$PRI_TI1" "$OOM_TI1" "$SCH_BAT"  "0"
+
+  'haveged'         "$PRI_TI2" "$OOM_TI2" "$SCH_BAT"  "0"
+  'hd-idle'         "$PRI_TI3" "$OOM_TI2" "$SCH_BAT"  "0"
+  'minidlna'        "$PRI_TI3" "$OOM_TI2" "$SCH_BAT"  "0"
+  'nlbwmon'         "$PRI_TI3" "$OOM_TI2" "$SCH_BAT"  "0"
+  'tcpdump'         "$PRI_TI3" "$OOM_TI2" "$SCH_BAT"  "0" )
+
+# Setup the traps that are issued by procd for every possible action
+trap "reload" SIGHUP
+trap "stop" SIGTERM
+
+while [ -f "$ARG2" ] && [ "0$PROCD_PID" -eq "0$$" ]; do wait_sleep $ARG4
+  for ((i = 0; i < ${#PROCESSES[@]}; i = i + 5)); do
+    PROCESS_NAME="${PROCESSES[$i]}"
+    NEW_NICE="${PROCESSES[$i+1]}"
+    NEW_OOM="${PROCESSES[$i+2]}"
+    NEW_POL="${PROCESSES[$i+3]}"
+    NEW_PRI="${PROCESSES[$i+4]}"
+    PIDOF_LIST="$(pgrep "$PROCESS_NAME" | xargs)"
+    for pid in $PIDOF_LIST; do
+      TASKS=$(ls "/proc/$pid/task" | xargs)
+      if [ "x$NEW_POL" = "xno" ]; then :; else
+        "$CHRT_BIN" -a$NEW_POL -p $NEW_PRI $pid
+      fi
+      if [ "x$NEW_NICE" = "xno" ]; then :; else
+        "$RENICE_BIN" $NEW_NICE $TASKS
+      fi
+      for task in $TASKS; do
+        if [ "x$NEW_OOM" = "xno" ]; then :; else
+          printf '%s' "$NEW_OOM" > "/proc/$task/oom_score_adj"
+        fi
+      done
+    done
+  done
+  wait_sleep $ARG3
+done
