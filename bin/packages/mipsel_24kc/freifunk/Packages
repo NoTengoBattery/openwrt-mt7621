@@ -1,0 +1,110 @@
+Package: freifunk-common
+Version: 9
+Depends: libc, uci
+Section: luci
+Architecture: mipsel_24kc
+Installed-Size: 1611
+Filename: freifunk-common_9_mipsel_24kc.ipk
+Size: 2350
+SHA256sum: ae01e25685f20ab8116abcecc185032064b4c2e2d5eadfc4fe58c693dda1cad8
+Description:  Common files and scripts that are needed to run free wireless mesh networks.
+
+Package: freifunk-firewall
+Version: 3
+Depends: libc, firewall
+Section: luci
+Architecture: mipsel_24kc
+Installed-Size: 1121
+Filename: freifunk-firewall_3_mipsel_24kc.ipk
+Size: 1970
+SHA256sum: a3aede5a399d2b8811fd58b1d8ceaae6ed783cbef74c12533b056011606ba5fe
+Description:  Various firewall extensions for Freifunk. Includes NAT fixes and advanced settings.
+
+Package: freifunk-policyrouting
+Version: 7
+Depends: libc, ip
+Section: luci
+Architecture: mipsel_24kc
+Installed-Size: 2264
+Filename: freifunk-policyrouting_7_mipsel_24kc.ipk
+Size: 3007
+SHA256sum: 1023738980c353da100f1b8291cff9bf7d1046abd6b1bd3d06bbc940e6015e63
+Description:  Allows you to send your own traffic via your own default gateway while sending traffic received from the mesh to a gateway in the mesh.
+
+Package: luci-app-freifunk-diagnostics
+Version: git-20.249.85577-98e83ff
+Depends: libc
+Section: luci
+Architecture: all
+Installed-Size: 2192
+Filename: luci-app-freifunk-diagnostics_git-20.249.85577-98e83ff_all.ipk
+Size: 3040
+SHA256sum: 513ebb02dc45f4b903e2bf6921a7b89f4b4d3b3d97f8235f106909d5d0502066
+Description:  Tools for network diagnosis like traceroute and ping
+
+Package: luci-app-freifunk-policyrouting
+Version: git-20.249.85577-98e83ff
+Depends: libc, freifunk-policyrouting
+Section: luci
+Architecture: all
+Installed-Size: 1157
+Filename: luci-app-freifunk-policyrouting_git-20.249.85577-98e83ff_all.ipk
+Size: 1979
+SHA256sum: 8a74ca0f86c741a99d03d0a441e64bf4ac073b94a5dd54203f7ad70e6c23b143
+Description:  Policy routing for mesh traffic
+
+Package: luci-app-freifunk-widgets
+Version: git-20.249.85577-98e83ff
+Depends: libc, luci-mod-freifunk
+Section: luci
+Architecture: all
+Installed-Size: 4338
+Filename: luci-app-freifunk-widgets_git-20.249.85577-98e83ff_all.ipk
+Size: 5146
+SHA256sum: f04cb941f01fb352228671aa0682bc50c67ff6e96c5ee39123998df417065a7b
+Description:  Widgets for the Freifunk index page
+
+Package: luci-app-meshwizard
+Version: git-20.249.85577-98e83ff
+Depends: libc, meshwizard
+Section: luci
+Architecture: all
+Installed-Size: 2750
+Filename: luci-app-meshwizard_git-20.249.85577-98e83ff_all.ipk
+Size: 3589
+SHA256sum: 3d89c8260e1e56413a53f987f97dfe275c6fbe381abee0b56fd8913e055ba48c
+Description:  Shellscript based wizard to setup mesh networks
+
+Package: luci-mod-freifunk
+Version: git-20.249.85577-98e83ff
+Depends: libc, luci-mod-admin-full, luci-lib-json, luci-lib-ipkg, freifunk-firewall, freifunk-common
+Section: luci
+Architecture: all
+Installed-Size: 11682
+Filename: luci-mod-freifunk_git-20.249.85577-98e83ff_all.ipk
+Size: 12494
+SHA256sum: 130027ea742322cb15e98918c86c8205d38dd5372e35fd6aa969155e3a2ee236
+Description:  LuCI Freifunk module
+
+Package: luci-theme-freifunk-generic
+Version: git-20.249.85577-98e83ff
+Depends: libc
+Section: luci
+Architecture: all
+Installed-Size: 14595
+Filename: luci-theme-freifunk-generic_git-20.249.85577-98e83ff_all.ipk
+Size: 15380
+SHA256sum: 5acb4213bce276ea5cc8d65603e2165f42a4ccd9707c4dd87565ba81fd3d8b6f
+Description:  Freifunk Generic Theme
+
+Package: meshwizard
+Version: 0.3.3
+Depends: libc, firewall
+Section: luci
+Architecture: mipsel_24kc
+Installed-Size: 13085
+Filename: meshwizard_0.3.3_mipsel_24kc.ipk
+Size: 13815
+SHA256sum: 372b85654627cc754346fe0eff0667e5e5afb360b29efb006ec674d7803e8beb
+Description:  A shellscript based wizard to simplify the setup of a typical mesh node (e.g. for Freifunk.net)
+
