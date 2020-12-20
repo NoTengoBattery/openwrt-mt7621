@@ -1,0 +1,70 @@
+> **NOTE: The download link is at the very bottom of this text. Please: read all the notes and then continue to download. This page is designed to force you to do that.**
+
+## Don't forget to apply the hotfixes!
+Since I'm not perfect, and I have not a team of engineers to support my work; sometimes I do forget some details when the image is ready and it's not worth re-build. Instead of just keeping the annoyances go along, I decided to implement the "hotfixes" mechanics.
+
+Here is how it works:
+1. Flash the image as always.
+2. Once your device boots, go immediately to the `Backup / Flash Firmware` in LuCI.
+3. Upload the `hotfixes.tar.gz` in the `Restore` section, as if it's a backup.
+
+That's all!
+
+## How to decompress and install
+> Warning: the 'sysupgrade' procedure will reset some settings to their default values. You can see the changes made to your system by looking at the 'bootz' files in `/etc/bootz`.
+
+First, decompress the downloaded file. This file is compressed using `zstd` and it's a tarball.
+ - If you are using **Windows**, you can install [PeaZip](https://www.peazip.org)
+ - If you are using **macOS**, you can install [Keka (beta)](https://beta.keka.io)
+ - If you are using **Linux**, you probably have all the tools already installed
+
+You will find a folder once decompressed. Inside this folder, you will find the following folders:
+ - `bin`: this contains the two "flashable" versions of the firmware. One is a `sysupgrade` image that you will use to update from another version or from OpenWrt; and the other is a `factory` image which you will use to flash directly from the Linksys firmware.
+ - `info`: this folder contains the manifests, the configuration seed, and the checksums. Also, it contains a copy of this document.
+ - `patches`: it contains all the patches that apply cleanly over the fork point. Use them if you download the source code and want to build your own firmware form a working copy. Also, they need to be distributed due to the software license.
+
+### From the OpenWrt firmware or from another version of this firmware
+Go to LuCI and apply the `sysupgrade` image. Either from the OpenWrt firmware or from another version of this firmware. 
+
+Go to http://192.168.xx.1/cgi-bin/luci/admin/system/flash if you are using another version of this firmware. Go to https://192.168.1.1/cgi-bin/luci/admin/system/flash if you are using the OpenWrt firmware. Or you can use the command line if you have not installed LuCI. Then, apply the update accordingly.
+
+### From the Chinese firmware
+The wiki describes the process. You will need to boot into the u-boot recovery web GUI and then apply the upgrade. This only needs to be done once.
+
+## General notes
+All kernel modules for a particular version, among with a wide set of LuCI apps, are automatically uploaded to GitHub and `opkg` is configured to use them. All of the other software is available from OpenWrt's snapshots, but the ROM is not configured to use them [by default].
+
+If there is some missing package or kernel module, please open a GitHub issue or send feedback to my e-mail or OpenWrt forum thread explaining exactly what's missing. It will be added to the next release.
+
+## Take into consideration
+LuCI has full OpenSSL support. However, for your convenience, you can access the HTTP version of LuCI. This is because it's not convenient to install a random self-signed certificate every single time. You can use the HTTP version, restore your certificate, and then disable the HTTP access.
+
+The default IP address is now `192.168.xx.1` and IPv6 is `fd00:192:168:xx::1`, the `xx` means that every supported device has a different subnet IP. Hostname is `Glucose`, `Galactose`.
+
+For LuCI Administration WebUI, go to
+ - DNS: http://192.168.xx.1/cgi-bin/luci/admin/services/unbound
+ - IPv4: http://192.168.xx.1/cgi-bin/luci/admin
+ - IPv6: http://[fd00:192:168:xx::1]/cgi-bin/luci/admin
+
+```
+Wireless password:
+ - [Hostname] -> OpenWrt on [Hostname]
+Login password:
+ - admin -> admin
+ - root -> root
+```
+> Note: [Hostname] refers to the device's default hostname, you should replace that placeholder accordingly. For example, the SSID for Dallas will be `Dallas` and the password will be `OpenWrt on Dallas`.
+
+Give Me Love 💌
+==============
+Don't hesitate in giving this repository a golden star, forking it, or watching its releases. This build is and will be free forever, the only thing that may I ask in exchange is proper feedback.
+
+Downloads
+=========
+Click the "Assets" button below and download the `.tar.zst` file. If you want to check the hotfixes integrity, here is the SHA256 checksum. Use the `shasum` command or PeaZip/7zip, if you use Windows.
+
+**You should only flash the hotfixes file which contains the hostname (in lowercase) of your device. If the hotfix file for your device is not present, but there is one that is called `others`, you should use that file in your device.**
+
+```
+hotfixes.tar.gz: SHA256 [currently, no hotfixes are needed]
+```
