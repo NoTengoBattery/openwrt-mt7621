@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+NAME=bootz
+PROG=/bin/bootz
+START=36
+STOP=00
+USE_PROCD=1
+
+start_service() {
+  procd_open_instance bootz
+  procd_set_param command $PROG
+  procd_append_param command boot
+  procd_set_param stdout 0
+  procd_set_param stderr 0
+  procd_close_instance
+}
+
+stop_service() {
+  $PROG fixup
+}

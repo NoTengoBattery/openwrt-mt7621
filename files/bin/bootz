@@ -1,0 +1,334 @@
+#!/bin/sh /etc/rc.common
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+. /lib/functions.sh
+extra_command "fixup" "Perform file syncronization and fixup between partitions"
+board=$(board_name)
+
+BOOTFS=/bootfs
+FIRSTBOOT_FILE=/etc/bootz/v1.05
+FSTAB=/etc/config/fstab
+FSTAB_BOOT=${BOOTFS}/upper${FSTAB}
+FSTAB_ROM=/rom${FSTAB}
+
+fixup() {
+  mkdir -p $(dirname $FIRSTBOOT_FILE) $(dirname $FSTAB) $(dirname $FSTAB_BOOT)
+  if [ -L "$FSTAB" ] || [ ! -f "$FSTAB" ]; then
+    rm -r $FSTAB
+    cp -af $FSTAB_ROM $FSTAB
+  fi
+  cp -af $FSTAB $FSTAB_BOOT
+  logger -s -t bootz -p user.info \
+    "Synced the fstab between the external overlay and the boot file system"
+  openssl x509 -in /etc/uhttpd.crt -inform DER -out /etc/uhttpd.pem -outform PEM || \
+  openssl x509 -in /etc/uhttpd.crt -inform PEM -out /etc/uhttpd.pem -outform PEM
+}
+
+boot() {
+  FIRSTBOOT_FILE_LOG=/tmp/bootz_log
+
+  DEFAULT_ADMIN_PASSWORD=admin
+  DEFAULT_ADMIN_UID=10
+  DEFAULT_LED_BLINK=yes
+  DEFAULT_CONFIGURE_NTP=yes
+  DEFAULT_DISABLE_UHTTPD_REDIRECT=yes
+  DEFAULT_LAN_FORCE_DHCP=yes
+  DEFAULT_NTP_SERVERS='pool.ntp.org time.nist.gov time.google.com time.windows.com time.apple.com'
+  DEFAULT_ROOT_PASSWORD=root
+    DEVICE_ENABLE_DEFAULTS=yes
+
+  case "$board" in
+  glinet,gl-b1300)
+    DEVICE_HOSTNAME=Convexa-B
+    DEFAULT_LAN_IP="192.168.50.1"
+    DEVICE_SYSFS_LED='green:power'
+    ;;
+  glinet,gl-s1300)
+    DEVICE_HOSTNAME=Convexa-S
+    DEFAULT_LAN_IP="192.168.51.1"
+    DEVICE_SYSFS_LED='green:power'
+    ;;
+  linksys,ea6350v3)
+    DEVICE_HOSTNAME=Civic
+    DEFAULT_LAN_IP="192.168.52.1"
+    DEVICE_SYSFS_LED='green:status'
+    ;;
+  linksys,ea8300)
+    DEVICE_HOSTNAME=Dallas
+    DEFAULT_LAN_IP="192.168.53.1"
+    DEVICE_SYSFS_LED='white:linksys'
+    ;;
+  linksys,mr8300)
+    DEVICE_HOSTNAME=Dallas
+    DEFAULT_LAN_IP="192.168.54.1"
+    DEVICE_SYSFS_LED='blue:power'
+    ;;
+  zbtlink,zbt-wg3526-16m)
+    DEVICE_HOSTNAME=Glucose
+    DEFAULT_LAN_IP="192.168.55.1"
+    DEVICE_SYSFS_LED='green:status'
+    ;;
+  zbtlink,zbt-wg3526-32m)
+    DEVICE_HOSTNAME=Galactose
+    DEFAULT_LAN_IP="192.168.56.1"
+    DEVICE_SYSFS_LED='green:status'
+    ;;
+  ezviz,cs-w3-wd1200g-eup)
+    DEVICE_HOSTNAME=Vitzio
+    DEFAULT_LAN_IP="192.168.57.1"
+    DEVICE_SYSFS_LED='green:status'
+    ;;
+  *)
+    logger -s -t bootz.exit -p user.err "Unsupported hardware '$board'."
+    exit 100
+    ;;
+  esac
+  DEFAULT_ULA=$(echo "$DEFAULT_LAN_IP" | awk '{gsub(/\./,":",$0)}{$0=substr($0,1,length($0)-1)}{printf "fd00:%s:/64\n", $0}')
+
+  ap_if_no_in() {  # Append if not in
+    local LINE="$1"
+    local FILE="$2"
+    (grep -qF "$LINE" "$FILE"  || echo "$LINE" | tee -a "$FILE") &> /dev/null
+  }
+
+  ap_if_no_ma_in() {  # Append if not match in
+    local MATCH="$1"
+    local LINE="$2"
+    local FILE="$3"
+    (grep -qF "$MATCH" "$FILE"  || echo "$LINE" | tee -a "$FILE") &> /dev/null
+  }
+
+  log_msg(){
+    local MESSAGE="$1"
+    (echo "bootz.log: $MESSAGE" >> "$FIRSTBOOT_FILE_LOG") &> /dev/null
+    logger -s -t bootz.log -p user.info "$MESSAGE"
+  }
+
+  fix_home(){
+    local XHOME="$1"
+    local XSSH="$XHOME/.ssh"
+    local XAUK="$XSSH/authorized_keys"
+    local XUID="$2"
+    local XGID="$3"
+    mkdir -p "$XHOME"; chmod 755 "$XHOME"
+    mkdir -p "$XSSH"; chmod 755 "$XSSH"
+    touch "$XAUK"; chmod 644 "$XAUK"
+    chown -R "$XUID:$XGID" "$XHOME"
+    log_msg "Fixed home directory for the UNIX user '$XUID' at '$XHOME'"
+  }
+
+  recreate_user(){
+    local XHOME="$1"
+    local XCOME="$2"
+    local XAGRP="$3"
+    local XSHLL="$4"
+    local XUUID="$5"
+    local XUSER="$6"
+    local XSKEL=/rom/root
+    userdel "$XUSER"; groupdel "$XUSER"
+    groupadd -f -g "$XUUID" "$XUSER"
+    useradd -c "$XCOME" -d "$XHOME" -g "$XUUID" -G "$XAGRP" -k "$XSKEL" -s "$XSHLL" -u "$XUUID" -m "$XUSER"
+    fix_home "$XHOME" "$XUUID" "$XUUID"
+    log_msg "Recreated system records for UNIX user '$XUSER'"
+  }
+
+  printf_passwd(){
+    local XUSER="$1"
+    local XPASS="$2"
+    local XEPAS=/bin/passwd
+    printf "$XPASS\n$XPASS\n\n" | "$XEPAS" "$XUSER"
+    log_msg "Changed default password for user '$XUSER' to '$XPASS'"
+  }
+
+  if [ "x$DEVICE_ENABLE_DEFAULTS" = "xyes" ]; then
+    if [ ! -f "$FIRSTBOOT_FILE" ]; then
+      echo "First boot!" > "$FIRSTBOOT_FILE_LOG"; fixup
+      uci set system.@system[0].hostname="$DEVICE_HOSTNAME"
+      SSID=$(uci get wireless.wifinet0.ssid)
+      if [ "x$SSID" = "xDEFAULT" ]; then
+        uci set wireless.wifinet0.ssid="$DEVICE_HOSTNAME"
+        uci set wireless.wifinet0.key="OpenWrt on $DEVICE_HOSTNAME"
+      fi
+      SSID=$(uci get wireless.wifinet1.ssid)
+      if [ "x$SSID" = "xDEFAULT" ]; then
+        uci set wireless.wifinet1.ssid="$DEVICE_HOSTNAME"
+        uci set wireless.wifinet1.key="OpenWrt on $DEVICE_HOSTNAME"
+      fi
+      uci commit; reload_config
+      log_msg "Changed the device hostname to '$DEVICE_HOSTNAME'"
+
+
+      # Create UNIX users and groups and fix home directories
+      # - Make the shells available to the system
+      ap_if_no_in $(which bash) /etc/shells
+      ap_if_no_in $(which nologin) /etc/shells
+      printf_passwd root "$DEFAULT_ROOT_PASSWORD"
+      chsh root -s /bin/bash
+      # - Recreate the system groups
+      UGRP=sudo; GIGI=200; groupadd -f -g $GIGI $UGRP
+      UGRP=netdev; GIGI=501; groupadd -f -g $GIGI $UGRP
+      UGRP=remote; GIGI=1000; groupadd -f -g $GIGI $UGRP
+      UGRP=local; GIGI=2000; groupadd -f -g $GIGI $UGRP
+      # - Recreate the system accounts
+      recreate_user /home/admin \
+        'Privileged User for System Administration' \
+        'local,root,sudo' \
+        /bin/bash \
+        $DEFAULT_ADMIN_UID \
+        admin
+      printf_passwd admin "$DEFAULT_ADMIN_PASSWORD"
+      log_msg "Created system default users"
+
+
+      # Change the IP address of LAN
+      uci set network.lan='interface' #
+      uci set network.lan.ipaddr="$DEFAULT_LAN_IP"
+      uci set network.lan.proto='static'
+      log_msg "Changed IP address of LAN to $DEFAULT_LAN_IP"
+      uci set network.globals='globals' #
+      uci set network.globals.ula_prefix="$DEFAULT_ULA"
+      uci set network.globals.packet_steering='1'
+      log_msg "Changed network globals (IPv6 ULA: $DEFAULT_ULA, enabled packet steering)"
+      uci set firewall.@defaults[0].synflood_protect='1'
+      uci set firewall.@defaults[0].flow_offloading='1'
+      log_msg "Reconfigured firewall to enable synflood protect and flow offloading"
+      uci commit
+
+
+      # Configure DNSMASQ to work with unbound
+      while uci del dhcp.@dnsmasq[-1]; do :; done
+      uci add dhcp dnsmasq
+      uci set dhcp.@dnsmasq[0].allservers='1'
+      uci set dhcp.@dnsmasq[0].authoritative='1'
+      uci set dhcp.@dnsmasq[0].dnsseccheckunsigned='0'
+      uci set dhcp.@dnsmasq[0].domain='lan'
+      uci set dhcp.@dnsmasq[0].domainneeded='1'
+      uci set dhcp.@dnsmasq[0].filterwin2k='1'
+      uci set dhcp.@dnsmasq[0].local='/lan/'
+      uci set dhcp.@dnsmasq[0].localise_queries='1'
+      uci set dhcp.@dnsmasq[0].localservice='1'
+      uci set dhcp.@dnsmasq[0].nonegcache='1'
+      uci set dhcp.@dnsmasq[0].noresolv='1'
+      uci set dhcp.@dnsmasq[0].readethers='1'
+      uci set dhcp.@dnsmasq[0].rebind_protection='1'
+      uci add_list dhcp.@dnsmasq[0].server='127.0.0.1#10053'
+      uci add_list dhcp.@dnsmasq[0].server='::1#10053'
+      log_msg "Configured DNSMASQ to forward requests to Unbound"
+      uci commit
+
+
+      # Add the LAN DHCP server
+      uci set dhcp.lan='dhcp' #
+      uci set dhcp.lan.dhcpv6='server'
+      uci set dhcp.lan.domain='lan'
+      uci set dhcp.lan.leasetime='24h'
+      uci set dhcp.lan.interface='lan'
+      uci set dhcp.lan.ra='server'
+      uci set dhcp.lan.ra_management='1'
+      uci set dhcp.lan.ra_useleasetime='1'
+      log_msg "Added the DHCP and DHCPv6 servers for the LAN interface"
+      if [ "x$DEFAULT_LAN_FORCE_DHCP" = "xyes" ]; then
+        uci set dhcp.lan.dhcpv4_forcereconf='1'
+        uci set dhcp.lan.force='1'
+        log_msg "Forced DHCP server for the LAN interface"
+      fi
+      # Ignore the WAN interface
+      uci set dhcp.wan='dhcp' #
+      uci set dhcp.wan.interface='wan'
+      uci set dhcp.wan.ignore='1'
+      uci set dhcp.wan6='dhcp' #
+      uci set dhcp.wan6.interface='wan6'
+      uci set dhcp.wan6.ignore='1'
+      log_msg "Disabled DHCP server in WAN interfaces"
+      uci commit
+
+
+      # Remove the WAN ISP DNS servers and use Unbound instead
+      uci set network.wan='interface' #
+      uci set network.wan.dns='127.0.0.1'
+      uci set network.wan.peerdns='0'
+      uci set network.wan.proto='dhcp'
+      uci set network.wan6='interface' #
+      uci set network.wan6.dns='::1'
+      uci set network.wan6.ifname='@wan'
+      uci set network.wan6.peerdns='0'
+      uci set network.wan6.proto='dhcpv6'
+      log_msg "Changed the internal DNS server to 'localhost' for 'wan' and 'wan6'"
+      uci commit
+
+
+      USRV=/etc/unbound/unbound_srv.conf
+      ap_if_no_in '# Optimize the cache usage, getting advantage of zram/zswap' $USRV
+      ap_if_no_ma_in 'cache-max-ttl:' "  cache-max-ttl: 86400" $USRV
+      ap_if_no_ma_in 'outgoing-port-permit:' "  outgoing-port-permit: 1024-65535" $USRV
+      ap_if_no_ma_in 'serve-expired-ttl:' "  serve-expired-ttl: 86400" $USRV
+      ap_if_no_ma_in 'serve-expired:' "  serve-expired: yes" $USRV
+      log_msg "Updated 'unbound' server configuration"
+
+
+      uci set luci.main='core' #
+      uci set luci.main.lang='en'
+      uci set system.@system[0]='system' #
+      uci set system.@system[0].log_file='/dev/pmsg0'
+      uci set system.@system[0].log_size='1536'
+      log_msg "Updated logging and language options for the system"
+      uci commit; /etc/init.d/log restart
+
+
+      if [ "x$DEFAULT_LED_BLINK" = "xyes" ]; then
+        while uci del system.@led[-1]; do :; done
+        uci add system led #
+        uci set system.@led[-1].name='Booted!'
+        uci set system.@led[-1].sysfs="$DEVICE_SYSFS_LED"
+        uci set system.@led[-1].trigger='timer'
+        uci set system.@led[-1].delayoff='2500'
+        uci set system.@led[-1].delayon='500'
+        log_msg "Enabled LED configuration for LED '$DEVICE_SYSFS_LED' to blink"
+        uci commit
+      fi
+
+
+      # Add some NTP servers
+      if [ "x$DEFAULT_CONFIGURE_NTP" = "xyes" ]; then
+        uci set system.ntp='timeserver' #
+        uci set system.ntp.enabled='1'
+        uci set system.ntp.enable_server='1'
+        uci set system.ntp.use_dhcp='1'
+        uci del system.ntp.server
+        for NNTP in $DEFAULT_NTP_SERVERS; do
+          uci add_list system.ntp.server="$NNTP"
+          echo "Appended NTP server '$NNTP' to the system NTP daemon";
+        done
+        log_msg "Replaced OpenWrt servers with known public NTP servers"
+        uci commit
+      fi
+
+
+      uci set dropbear.@dropbear[0]='dropbear' #
+      uci set dropbear.@dropbear[0].Interface='lan'
+      uci set dropbear.@dropbear[0].PasswordAuth='on'
+      uci set dropbear.@dropbear[0].Port='22'
+      log_msg "Reconfigured dropbear"
+      uci commit
+
+
+      log_msg "Finalized the 'run once' 'bootz' on first boot!"
+      log_msg "Default configuration applied to the system"
+      rm /etc/bootz/v*
+      chmod 644 "$FIRSTBOOT_FILE_LOG"
+      mv "$FIRSTBOOT_FILE_LOG" "$FIRSTBOOT_FILE"
+    else
+      logger -s -t bootz.disable -p user.info "Already first booted!"
+    fi
+  else
+    log_msg "Bootz not running: incompatible device"
+  fi
+
+  # Fix user directories (always do this)
+  fix_home /home/admin $DEFAULT_ADMIN_UID $DEFAULT_ADMIN_UID
+  fix_home /root 0 0
+
+  # Reload UCI configuration
+  sync; reload_config; fixup
+}
