@@ -1,0 +1,49 @@
+From: Oever González <notengobattery@gmail.com>
+Subject: [PATCH] crypto: improve zstandard handler
+Date: Fri, 17 Jul 2020 20:16:22 -0600
+
+This patch tries to improve the compression used by the crypto module, in
+particular, the zstandard compression by providing it the length of the input
+data and a slightly better compression level.
+
+Signed-off-by: Oever González <notengobattery@gmail.com>
+---
+--- a/crypto/zstd.c
++++ b/crypto/zstd.c
+@@ -15,7 +15,7 @@
+ #include <crypto/internal/scompress.h>
+ 
+ 
+-#define ZSTD_DEF_LEVEL	3
++#define ZSTD_DEF_LEVEL	6
+ 
+ struct zstd_ctx {
+ 	ZSTD_CCtx *cctx;
+@@ -24,15 +24,15 @@ struct zstd_ctx {
+ 	void *dwksp;
+ };
+ 
+-static ZSTD_parameters zstd_params(void)
++static ZSTD_parameters zstd_params(size_t src_len)
+ {
+-	return ZSTD_getParams(ZSTD_DEF_LEVEL, 0, 0);
++	return ZSTD_getParams(ZSTD_DEF_LEVEL, src_len, 0);
+ }
+ 
+ static int zstd_comp_init(struct zstd_ctx *ctx)
+ {
+ 	int ret = 0;
+-	const ZSTD_parameters params = zstd_params();
++	const ZSTD_parameters params = zstd_params(0);
+ 	const size_t wksp_size = ZSTD_CCtxWorkspaceBound(params.cParams);
+ 
+ 	ctx->cwksp = vzalloc(wksp_size);
+@@ -152,7 +152,7 @@ static int __zstd_compress(const u8 *src, unsigned int slen,
+ {
+ 	size_t out_len;
+ 	struct zstd_ctx *zctx = ctx;
+-	const ZSTD_parameters params = zstd_params();
++	const ZSTD_parameters params = zstd_params(slen);
+ 
+ 	out_len = ZSTD_compressCCtx(zctx->cctx, dst, *dlen, src, slen, params);
+ 	if (ZSTD_isError(out_len))
