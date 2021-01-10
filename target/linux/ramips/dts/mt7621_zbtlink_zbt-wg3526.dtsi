@@ -6,6 +6,21 @@
 / {
 	compatible = "zbtlink,zbt-wg3526", "mediatek,mt7621-soc";
 
+	reserved-memory {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		ranges;
+
+		ramoops@7b80000 {
+			compatible = "ramoops";
+			reg = <0x7b80000 0x480000>;
+			console-size = <0x180000>;
+			pmsg-size    = <0x180000>;
+			record-size  = <0x180000>;
+			ecc-size = <16>;
+		};
+	};
+
 	aliases {
 		led-boot = &led_status;
 		led-failsafe = &led_status;

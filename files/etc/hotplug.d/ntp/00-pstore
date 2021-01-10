@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+# As soon as we have the correct date and time, move the logs to a persistent
+# folder, then users can easily locate the latest failed log.
+
+PSTORE=/sys/fs/pstore
+
+if [ "x$ACTION" = "xstratum" ]; then
+  if [ -d "$PSTORE" ] && [ ! -z "$(ls -A $PSTORE)" ]; then
+    output=$(date "+%Y-%m-%d/%H-%M-%S")
+    output_dir=/bootfs/pstore/$output
+    mkdir -p $output_dir
+    mv -f /sys/fs/pstore/* $output_dir
+    for stored in $output_dir/*; do
+      bzip2 -tq9 -z $stored &
+      if [ $? -eq 0 ]; then
+        echo "pstore: collected an compressed $(basename $stored) from last boot" > /dev/kmsg
+      fi
+    done
+  fi
+fi
