@@ -1,0 +1,15 @@
+## Sample initialization file for GNU nano.
+##
+## This file should not be in DOS or Mac format, and characters
+## specially interpreted by the shell should not be escaped here.
+##
+## To make sure an option is disabled, use "unset <option>".
+##
+## For the options that take parameters, the default value is given.
+## Other options are unset by default.
+##
+## Inside string parameters, quotes should not be escaped.  The last
+## double quote on the line will be seen as the closing quote.
+
+## Include all existing syntax definitions
+include "/usr/share/nano/*.nanorc"

@@ -1,0 +1,26 @@
+[global]
+    netbios name =          |NAME|
+    interfaces =            |INTERFACES|
+    server string =         |DESCRIPTION|
+    unix charset =          |CHARSET|
+    workgroup =             |WORKGROUP|
+
+    # From OpenWrt template
+    bind interfaces only =  yes
+    deadtime =              15
+    delete veto files =     yes
+    disable spoolss =       yes
+    load printers =         no
+    map to guest =          Bad User
+    mdns name =             mdns
+    null passwords =        no
+    passdb backend =        smbpasswd
+    printcap name =         /dev/null
+    printing =              bsd
+    veto files =            /Thumbs.db/.DS_Store/._.DS_Store/.apdisk/
+
+    access based share enum = yes
+    fruit:aapl =            yes
+    fruit:copyfile =        yes
+    fruit:model =           AirPort7,120 # The icon shown in Finder
+    fruit:resource =        file

@@ -1,0 +1,12 @@
+# ---                   Custom commands to run at startup                   ---
+
+
+
+# ---                     Your commands above this line                     ---
+# ---                    !Do NOT modify the lines below!                    ---
+
+# -- Run these at startup
+(sleep  3m; opkg update) &
+
+# ---                    !Do NOT modify the lines above!                    ---
+exit 0

@@ -1,0 +1,28 @@
+set -x
+chmod -R 755 files &> /dev/null
+chmod    440 files/bootfs/* &> /dev/null
+chmod    440 files/etc/banner &> /dev/null
+chmod    440 files/etc/extrafiles.txt &> /dev/null
+chmod    440 files/etc/rc.local &> /dev/null
+chmod    440 files/etc/sudoers.d/* &> /dev/null
+chmod    440 files/etc/sysupgrade.conf &> /dev/null
+chmod    600 files/etc/config/* &> /dev/null
+chmod    600 files/etc/crontabs/root &> /dev/null
+chmod    640 files/etc/bootz/files.reset &> /dev/null
+chmod    640 files/etc/calibration/**/**/**/*.bin &> /dev/null
+chmod    644 files/etc/avahi/avahi-daemon.conf &> /dev/null
+chmod    644 files/etc/opkg/* &> /dev/null
+chmod    644 files/etc/samba/smb.conf.template &> /dev/null
+chmod    644 files/etc/ssh/sshd_config &> /dev/null
+chmod    644 files/etc/sysctl.d/* &> /dev/null
+chmod    644 files/root/.config/htop/htoprc &> /dev/null
+chmod    644 files/root/.nanorc &> /dev/null
+chmod    644 files/root/.ssh/authorized_keys &> /dev/null
+chmod    644 files/usr/share/nano/* &> /dev/null
+chmod    644 files/www/index.html &> /dev/null
+chmod    664 files/lib/preinit/* &> /dev/null
+chmod    755 files/bin/* &> /dev/null
+chmod    755 files/etc/hotplug.d/**/* &> /dev/null
+chmod    755 files/etc/init.d/* &> /dev/null
+chmod    755 files/sbin/* &> /dev/null
+chmod    775 files/etc/board.d/* &> /dev/null

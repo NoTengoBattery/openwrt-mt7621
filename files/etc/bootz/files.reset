@@ -1,0 +1,3 @@
+/bin/resetfiles
+/etc/bootz/files.reset
+/etc/sudoers.d/00-admin

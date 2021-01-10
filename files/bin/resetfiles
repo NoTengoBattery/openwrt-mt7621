@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# Problems? Sugestions? Contact me here: https://github.com/NoTengoBattery/openwrt/issues
+
+mapfile -t KEEP < <(sysupgrade --list-backup | sort | uniq)
+mapfile -t IGNORE < <(ls /usr/lib/opkg/info/* | sort | uniq)
+mapfile -t CURRENT < <((cd /overlay/upper && find . -type f -exec readlink -f "/{}" \;) | sort | uniq)
+mapfile -t ROM < <((cd /rom && find . -type f -exec readlink -f "/{}" \;) | sort | uniq)
+mapfile -t NEVER_KEEP < <(cat /rom/etc/bootz/files.reset | sort | uniq)
+mapfile -t CUSTOM < <(cat "$@" | sort | uniq)
+
+mapfile -t NOT_KEEPT < <(printf "%s\n" "${KEEP[@]}" "${CURRENT[@]}" | sort | uniq -u)
+mapfile -t REPLACE < <(printf "%s\n" "${ROM[@]}" "${NOT_KEEPT[@]}" "${NEVER_KEEP[@]}" "${CUSTOM[@]}" | sort | uniq -d)
+mapfile -t REPLACE_ROM < <(printf "%s\n" "${REPLACE[@]}" "${IGNORE[@]}" | sort | uniq -u)
+
+for file in "${REPLACE_ROM[@]}"; do
+  echo "Replacing file '$file' with it's original version..."
+  REAL_FILE=$(readlink -f "$file")
+  ROM_FILE=$(readlink -f "/rom/$REAL_FILE")
+  mkdir -p "$(dirname "$REAL_FILE")" &> /dev/null
+  cp -a -f "$ROM_FILE" "$REAL_FILE" &> /dev/null
+done
