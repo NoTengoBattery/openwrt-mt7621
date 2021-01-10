@@ -1,0 +1,54 @@
+
+
+# --- --- --- ~ Start of the image configuration seed ~ --- --- --- #
+
+# - target configuration
+CONFIG_TARGET_ramips=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_ramips_mt7621=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_DEVICE_ramips_mt7621_DEVICE_zbtlink_zbt-wg3526-16m=y
+CONFIG_TARGET_DEVICE_ramips_mt7621_DEVICE_zbtlink_zbt-wg3526-32m=y
+CONFIG_TARGET_MULTI_PROFILE=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_PER_DEVICE_ROOTFS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_TARGET_SQUASHFS_BLOCK_SIZE=1024
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - compile configuration
+CONFIG_GCC_USE_GRAPHITE=y
+CONFIG_TARGET_OPTIMIZATION="-O3 -pipe -march=1004kc -mtune=1004kc"
+
+
+# - kernel configuration
+CONFIG_KERNEL_TASKSTATS=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# !- busybox
+
+# -- busybox tools
+CONFIG_BUSYBOX_CONFIG_CKSUM=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUSYBOX_CONFIG_RENICE=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUSYBOX_CONFIG_STAT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+# -- busybox extras
+CONFIG_BUSYBOX_CONFIG_FEATURE_STAT_FILESYSTEM=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+CONFIG_BUSYBOX_CONFIG_FEATURE_STAT_FORMAT=y
+# --- --- --- DO NOT edit the line above --- --- --- #
+
+
+# - versioning
+CONFIG_VERSION_BUG_URL="https://github.com/NoTengoBattery/openwrt-mt7621/issues"
+CONFIG_VERSION_DIST="NoTengoBattery"
+CONFIG_VERSION_HOME_URL="https://github.com/NoTengoBattery/openwrt-mt7621/releases"
+CONFIG_VERSION_MANUFACTURER="MediaTek"
+CONFIG_VERSION_MANUFACTURER_URL="https://www.mediatek.com"
+CONFIG_VERSION_PRODUCT="MT7621"
+CONFIG_VERSION_REPO="https://raw.githubusercontent.com/NoTengoBattery/openwrt-mt7621/v1.05/bin"
+CONFIG_VERSION_SUPPORT_URL="https://github.com/NoTengoBattery/openwrt-mt7621/issues"
