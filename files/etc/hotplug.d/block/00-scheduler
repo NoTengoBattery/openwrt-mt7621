@@ -1,0 +1,40 @@
+#!/bin/sh
+
+readonly DEFAULT_QUEUE=noop
+readonly ROTATIONAL_QUEUE=bfq
+readonly NON_ROTATIONAL_QUEUE=kyber
+
+_on_add() {
+  if [ "x$ACTION" = "xadd" ]; then
+    SYS_BLOCK=/sys/block/$DEVNAME/queue
+    if [ -d "$SYS_BLOCK" ]; then
+      SCHEDULER=$SYS_BLOCK/scheduler
+      IS_ROTATIONAL=$(lsblk -d -o name,rota | awk '/^'$DEVNAME'/{print $2}')
+      WAS=$(cat "$SCHEDULER")
+      if [ "0$IS_ROTATIONAL" -eq 1 ]; then
+        ROT=rotational
+        (echo $ROTATIONAL_QUEUE > "$SCHEDULER") &> /dev/null
+      else
+        ROT=non-rotational
+        (echo $NON_ROTATIONAL_QUEUE > "$SCHEDULER") &> /dev/null
+      fi
+      if [ "x$WAS" = "x$(cat "$SCHEDULER")" ]; then
+        if [ "x$(grep "$DEFAULT_QUEUE" "$SCHEDULER")" != "x" ]; then
+          ROT=single-queue
+          (echo $DEFAULT_QUEUE > "$SCHEDULER") &> /dev/null
+        fi
+      fi
+      if [ "x$WAS" = "x$(cat "$SCHEDULER")" ]; then :; else
+        printf "I/O scheduler: $ROT device '$DEVNAME' was '$WAS', now '$(cat $SCHEDULER)'" > /dev/kmsg
+      fi
+    fi
+  fi
+}
+
+if [ "x$ACTION" = "xrenew" ]; then
+  for DEV in /sys/block/*; do
+    ACTION=add DEVNAME=$(basename $DEV) _on_add
+  done
+else
+  _on_add
+fi
