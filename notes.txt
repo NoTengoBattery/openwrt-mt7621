@@ -1,0 +1,82 @@
+## Don't forget to apply the hotfixes!
+For small fixes and annoyances, the hotfix mechanics allows to provide a differential update that can be flashed without reinstalling the firmware.
+
+Here is how it works:
+1. Flash the image as always.
+2. Once the device boots, go immediately to the `Backup / Flash Firmware` in LuCI.
+3. Upload the `tar.gz` in the `Restore` section, as if it's a backup.
+
+## How to decompress and install
+> Warning: the 'sysupgrade' procedure will reset some settings to their default values. To see the system's changes by looking at the 'bootz' files in `/etc/bootz`.
+
+First, decompress the downloaded file. This file is compressed using `xz`, and it's a tarball.
+ - If using **Windows**, install [PeaZip](https://www.peazip.org)
+ - If using **macOS**, install [Keka (beta)](https://beta.keka.io)
+ - If using **Linux**, **macOS** or other **UNIX/UNIX-like**, it's likely that they have all the tools
+
+A folder will be decompressed. Inside this folder, there are the following subfolders:
+ - `bin`: this contains the two "flashable" versions of the firmware. One is a `sysupgrade` image that will upgrade from another version or OpenWrt, and the other is a `factory` image that will flash directly from the OEM firmware.
+ - `info`: this folder contains the manifests, the configuration seed, and the checksums.
+ - `patches`: it contains all the patches that apply cleanly over the fork point.
+
+### From the OpenWrt firmware or another version of this firmware
+Follow the instruction on the OpenWrt wiki page for upgrading using LuCI or CLI:
+- [System Upgrade](https://openwrt.org/docs/guide-user/installation/generic.sysupgrade)
+
+### From the Chinese firmware
+Follow the instruction on the OpenWrt wiki page for the device:
+- [EA6350v3](https://openwrt.org/toh/zbt/zbt_wg3526#installation)
+
+## Features and packages
+The binary installable image contains the following packages and features:
+- DNS
+  - Disabled `dnsmasq` DNS forwarder in favor of `unbound` resolver with TLS
+  - Configured Unbound as a TLS forwarder for a secure DNS server (currently: Quad9)
+- Utilities
+  - Tools: bash, nano, nologin, sudo
+  - Performance: haveged, schedutil, compressed-memory
+- LuCI
+  - adblock, advanced-reboot, commands, compressed-memory, dashboard, uhttpd, unbound
+- File Systems
+  - exfat, ext4, f2fs, msdos (FAT16/32)
+- Kernel features and modules
+  - New Linux IOSCHEDs elevators and Governors
+  - `schedutil` enabled by default for all CPU's
+  - Fully preemptive @ 100 Hz kernel for more responsiveness
+  - Overclocked to 1.2GHz without the need to flash a custom bootloader
+
+## General notes
+All kernel modules for a particular version, among with a wide set of LuCI apps, are automatically uploaded to GitHub, and `opkg` is configured to use them. The other software is available from OpenWrt's snapshots, but the ROM is not configured to use them *by default*. If there is some missing package or kernel module, please open a GitHub issue or send feedback to my email or my OpenWrt forum thread explaining exactly what's missing. It will be added to the next release.
+
+This is a custom configuration optimized for MT7621 devices. The purpose of this build is to give the user a sensible selection of software for testing and using OpenWrt without too much extra effort. It's also optimized for lower latency and fixes for many annoyances. This build contains some important changes compared to OpenWrt. It contains some customizations that cannot be found in the official OpenWrt image or the OpenWrt repositories. However, most packages (excluding kernel modules) are 100% compatible.
+
+## Take into consideration
+The default IP address is now `192.168.xx.1` and IPv6 is `fd00:192:168:xx::1`, the `xx` means that every supported device has a different subnet IP. The hostname is `Glucose` or `Galactose`, respectively.
+
+For LuCI Administration WebUI, go to
+ - DNS: http://192.168.xx.1/cgi-bin/luci/admin/services/unbound
+ - IPv4: http://192.168.xx.1/cgi-bin/luci/admin
+ - IPv6: http://[fd00:192:168:xx::1]/cgi-bin/luci/admin
+
+```
+Wireless password:
+ - [Hostname] -> OpenWrt on [Hostname]
+Login password:
+ - admin -> admin
+ - root -> root
+```
+> Note: [Hostname] refers to the device's default hostname. Replace that placeholder accordingly. For example, the SSID for Glucose will be `Glucose`, and the password will be `OpenWrt on Glucose`.
+
+Give Me Love 💌
+==============
+Don't hesitate to give this repository a golden star or forking it. This build is and will be free forever. The only thing that may I ask in exchange is proper feedback.
+
+Downloads
+=========
+Click the "Assets" button below and download the `.tar.xz` file. If you want to check the hotfix's integrity, here is the SHA256 checksum. Use the `shasum` command or PeaZip/7zip.
+
+**You should only flash the hotfixes file containing the hostname (in lowercase) of your device. If the hotfix file for your device is not present, but there is one called `others` or `common`, you should use both files first and finally the file for your device.**
+
+```
+  No Hotfixes needed at the moment.
+```
