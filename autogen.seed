@@ -109,6 +109,7 @@ CONFIG_PACKAGE_kmod-usb-ledtrig-usbport=m
 
 
 # --- --- --- CONFIG_[^= ]+OPTIMIZE[^= ]*O[0-9][^= ]* --- --- --- #
+CONFIG_ZSTD_OPTIMIZE_O3=y
 
 
 # --- --- --- CONFIG_[^= ]+OPTIMIZE[^= ]*PERFORMANCE[^= ]* --- --- --- #
@@ -123,9 +124,11 @@ CONFIG_KERNEL_CC_OPTIMIZE_FOR_SIZE=n
 
 # --- --- --- CONFIG_[^= ]+OPTIMIZE[^= ]*SPEED[^= ]* --- --- --- #
 CONFIG_OPENSSL_OPTIMIZE_SPEED=y
+CONFIG_ZLIB_OPTIMIZE_SPEED=y
 
 
 # --- --- --- CONFIG_shadow[^= ]* --- --- --- #
+CONFIG_shadow-all=n
 
 
 # --- --- --- ~ The following packages are available for manual installation ~ --- --- --- #
@@ -162,6 +165,31 @@ CONFIG_PACKAGE_umbim=m
 
 # --- --- --- CONFIG_PACKAGE_[^= ]*mesh[^= ]* --- --- --- #
 CONFIG_PACKAGE_luci-app-meshwizard=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-ca=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-cs=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-de=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-el=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-en=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-es=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-fr=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-he=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-hu=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-it=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-ja=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-ms=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-no=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-pl=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-pt=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-pt-br=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-ro=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-ru=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-sk=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-sv=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-tr=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-uk=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-vi=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-zh-cn=m
+CONFIG_PACKAGE_luci-i18n-meshwizard-zh-tw=m
 CONFIG_PACKAGE_meshwizard=m
 CONFIG_PACKAGE_wpad-mesh-openssl=m
 CONFIG_PACKAGE_wpad-mesh-wolfssl=m
@@ -181,7 +209,41 @@ CONFIG_PACKAGE_modemmanager=m
 
 
 # --- --- --- CONFIG_PACKAGE_[^= ]*openvpn[^= ]* --- --- --- #
+CONFIG_PACKAGE_collectd-mod-openvpn=m
 CONFIG_PACKAGE_luci-app-openvpn=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ar=m
+CONFIG_PACKAGE_luci-i18n-openvpn-bg=m
+CONFIG_PACKAGE_luci-i18n-openvpn-bn=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ca=m
+CONFIG_PACKAGE_luci-i18n-openvpn-cs=m
+CONFIG_PACKAGE_luci-i18n-openvpn-de=m
+CONFIG_PACKAGE_luci-i18n-openvpn-el=m
+CONFIG_PACKAGE_luci-i18n-openvpn-en=m
+CONFIG_PACKAGE_luci-i18n-openvpn-es=m
+CONFIG_PACKAGE_luci-i18n-openvpn-fa=m
+CONFIG_PACKAGE_luci-i18n-openvpn-fi=m
+CONFIG_PACKAGE_luci-i18n-openvpn-fr=m
+CONFIG_PACKAGE_luci-i18n-openvpn-he=m
+CONFIG_PACKAGE_luci-i18n-openvpn-hi=m
+CONFIG_PACKAGE_luci-i18n-openvpn-hu=m
+CONFIG_PACKAGE_luci-i18n-openvpn-it=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ja=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ko=m
+CONFIG_PACKAGE_luci-i18n-openvpn-mr=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ms=m
+CONFIG_PACKAGE_luci-i18n-openvpn-no=m
+CONFIG_PACKAGE_luci-i18n-openvpn-pl=m
+CONFIG_PACKAGE_luci-i18n-openvpn-pt=m
+CONFIG_PACKAGE_luci-i18n-openvpn-pt-br=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ro=m
+CONFIG_PACKAGE_luci-i18n-openvpn-ru=m
+CONFIG_PACKAGE_luci-i18n-openvpn-sk=m
+CONFIG_PACKAGE_luci-i18n-openvpn-sv=m
+CONFIG_PACKAGE_luci-i18n-openvpn-tr=m
+CONFIG_PACKAGE_luci-i18n-openvpn-uk=m
+CONFIG_PACKAGE_luci-i18n-openvpn-vi=m
+CONFIG_PACKAGE_luci-i18n-openvpn-zh-cn=m
+CONFIG_PACKAGE_luci-i18n-openvpn-zh-tw=m
 CONFIG_PACKAGE_openvpn-easy-rsa=m
 CONFIG_PACKAGE_openvpn-mbedtls=m
 CONFIG_PACKAGE_openvpn-openssl=m
@@ -203,16 +265,87 @@ CONFIG_PACKAGE_openwisp-config-openssl=m
 
 
 # --- --- --- CONFIG_PACKAGE_[^= ]*wwan[^= ]* --- --- --- #
+CONFIG_PACKAGE_kmod-usb-serial-wwan=m
 CONFIG_PACKAGE_wwan=m
 
 
 # --- --- --- CONFIG_PACKAGE_collectd[^= ]* --- --- --- #
 CONFIG_PACKAGE_collectd=m
+CONFIG_PACKAGE_collectd-mod-apache=m
+CONFIG_PACKAGE_collectd-mod-apcups=m
+CONFIG_PACKAGE_collectd-mod-ascent=m
+CONFIG_PACKAGE_collectd-mod-bind=m
+CONFIG_PACKAGE_collectd-mod-chrony=m
+CONFIG_PACKAGE_collectd-mod-conntrack=m
+CONFIG_PACKAGE_collectd-mod-contextswitch=m
+CONFIG_PACKAGE_collectd-mod-cpu=m
+CONFIG_PACKAGE_collectd-mod-csv=m
+CONFIG_PACKAGE_collectd-mod-curl=m
+CONFIG_PACKAGE_collectd-mod-df=m
+CONFIG_PACKAGE_collectd-mod-dhcpleases=m
+CONFIG_PACKAGE_collectd-mod-disk=m
+CONFIG_PACKAGE_collectd-mod-dns=m
+CONFIG_PACKAGE_collectd-mod-email=m
+CONFIG_PACKAGE_collectd-mod-entropy=m
+CONFIG_PACKAGE_collectd-mod-ethstat=m
+CONFIG_PACKAGE_collectd-mod-exec=m
+CONFIG_PACKAGE_collectd-mod-filecount=m
+CONFIG_PACKAGE_collectd-mod-fscache=m
+CONFIG_PACKAGE_collectd-mod-interface=m
+CONFIG_PACKAGE_collectd-mod-iptables=m
+CONFIG_PACKAGE_collectd-mod-irq=m
+CONFIG_PACKAGE_collectd-mod-iwinfo=m
+CONFIG_PACKAGE_collectd-mod-load=m
+CONFIG_PACKAGE_collectd-mod-logfile=m
+CONFIG_PACKAGE_collectd-mod-lua=m
+CONFIG_PACKAGE_collectd-mod-match-empty-counter=m
+CONFIG_PACKAGE_collectd-mod-match-hashed=m
+CONFIG_PACKAGE_collectd-mod-match-regex=m
+CONFIG_PACKAGE_collectd-mod-match-timediff=m
+CONFIG_PACKAGE_collectd-mod-match-value=m
+CONFIG_PACKAGE_collectd-mod-memory=m
+CONFIG_PACKAGE_collectd-mod-modbus=m
+CONFIG_PACKAGE_collectd-mod-mqtt=m
+CONFIG_PACKAGE_collectd-mod-mysql=m
+CONFIG_PACKAGE_collectd-mod-netlink=m
+CONFIG_PACKAGE_collectd-mod-network=m
+CONFIG_PACKAGE_collectd-mod-nginx=m
+CONFIG_PACKAGE_collectd-mod-ntpd=m
+CONFIG_PACKAGE_collectd-mod-olsrd=m
+CONFIG_PACKAGE_collectd-mod-ping=m
+CONFIG_PACKAGE_collectd-mod-postgresql=m
+CONFIG_PACKAGE_collectd-mod-powerdns=m
+CONFIG_PACKAGE_collectd-mod-processes=m
+CONFIG_PACKAGE_collectd-mod-protocols=m
+CONFIG_PACKAGE_collectd-mod-routeros=m
+CONFIG_PACKAGE_collectd-mod-rrdtool=m
+CONFIG_PACKAGE_collectd-mod-sensors=m
+CONFIG_PACKAGE_collectd-mod-snmp=m
+CONFIG_PACKAGE_collectd-mod-snmp6=m
+CONFIG_PACKAGE_collectd-mod-sqm=m
+CONFIG_PACKAGE_collectd-mod-syslog=m
+CONFIG_PACKAGE_collectd-mod-table=m
+CONFIG_PACKAGE_collectd-mod-tail=m
+CONFIG_PACKAGE_collectd-mod-tail-csv=m
+CONFIG_PACKAGE_collectd-mod-tcpconns=m
+CONFIG_PACKAGE_collectd-mod-teamspeak2=m
+CONFIG_PACKAGE_collectd-mod-ted=m
+CONFIG_PACKAGE_collectd-mod-thermal=m
+CONFIG_PACKAGE_collectd-mod-threshold=m
+CONFIG_PACKAGE_collectd-mod-ubi=m
+CONFIG_PACKAGE_collectd-mod-unixsock=m
+CONFIG_PACKAGE_collectd-mod-uptime=m
+CONFIG_PACKAGE_collectd-mod-users=m
+CONFIG_PACKAGE_collectd-mod-vmem=m
+CONFIG_PACKAGE_collectd-mod-wireless=m
+CONFIG_PACKAGE_collectd-mod-write-graphite=m
+CONFIG_PACKAGE_collectd-mod-write-http=m
 
 
 # --- --- --- CONFIG_PACKAGE_comgt[^= ]* --- --- --- #
 CONFIG_PACKAGE_comgt=m
 CONFIG_PACKAGE_comgt-directip=m
+CONFIG_PACKAGE_comgt-ncm=m
 
 
 # --- --- --- CONFIG_PACKAGE_dosfs[^= ]* --- --- --- #
@@ -247,6 +380,7 @@ CONFIG_PACKAGE_luci-app-adblock=m
 CONFIG_PACKAGE_luci-app-advanced-reboot=m
 CONFIG_PACKAGE_luci-app-ahcp=m
 CONFIG_PACKAGE_luci-app-aria2=m
+CONFIG_PACKAGE_luci-app-attendedsysupgrade=m
 CONFIG_PACKAGE_luci-app-babeld=m
 CONFIG_PACKAGE_luci-app-banip=m
 CONFIG_PACKAGE_luci-app-bcp38=m
@@ -257,6 +391,7 @@ CONFIG_PACKAGE_luci-app-bmx7=m
 CONFIG_PACKAGE_luci-app-cjdns=m
 CONFIG_PACKAGE_luci-app-clamav=m
 CONFIG_PACKAGE_luci-app-commands=m
+CONFIG_PACKAGE_luci-app-compressed-memory=m
 CONFIG_PACKAGE_luci-app-cshark=m
 CONFIG_PACKAGE_luci-app-dawn=m
 CONFIG_PACKAGE_luci-app-dcwapd=m
@@ -371,6 +506,8 @@ CONFIG_PACKAGE_xfs-growfs=m
 
 
 # --- --- --- CONFIG_SQUID_use[^= ]* --- --- --- #
+CONFIG_SQUID_use-gnutls=y
+CONFIG_SQUID_use-openssl=y
 
 
 # --- --- --- ~ The following settings affect the available packages ~ --- --- --- #
@@ -383,17 +520,26 @@ CONFIG_PACKAGE_xfs-growfs=m
 
 
 # --- --- --- CONFIG_[^= ]+GNUTLS[^= ]* --- --- --- #
+CONFIG_ARIA2_GNUTLS=n
+CONFIG_LIBCURL_GNUTLS=n
+CONFIG_OPENCONNECT_GNUTLS=n
+CONFIG_VPNC_GNUTLS=n
 CONFIG_ZABBIX_GNUTLS=n
 
 
 # --- --- --- CONFIG_[^= ]+MBEDTLS[^= ]* --- --- --- #
+CONFIG_LIBCURL_MBEDTLS=n
+CONFIG_LIBMBEDTLS_DEBUG_C=n
 
 
 # --- --- --- CONFIG_[^= ]+NOSSL[^= ]* --- --- --- #
+CONFIG_ARIA2_NOSSL=n
+CONFIG_LIBCURL_NOSSL=n
 CONFIG_ZABBIX_NOSSL=n
 
 
 # --- --- --- CONFIG_[^= ]+WOLFSSL[^= ]* --- --- --- #
+CONFIG_LIBCURL_WOLFSSL=n
 CONFIG_WPA_WOLFSSL=n
 
 
@@ -473,7 +619,11 @@ CONFIG_PACKAGE_wpa-supplicant-wolfssl=n
 
 
 # --- --- --- CONFIG_[^= ]+OPENSSL[^= ]* --- --- --- #
+CONFIG_ARIA2_OPENSSL=y
 CONFIG_BUSYBOX_DEFAULT_FEATURE_WGET_OPENSSL=y
+CONFIG_LIBCURL_OPENSSL=y
+CONFIG_OPENCONNECT_OPENSSL=y
+CONFIG_VPNC_OPENSSL=y
 CONFIG_ZABBIX_OPENSSL=y
 
 
@@ -497,6 +647,7 @@ CONFIG_PACKAGE_kmod-nf-nathelper-extra=m
 
 # --- --- --- CONFIG_PACKAGE_kmod-atm[^= ]* --- --- --- #
 CONFIG_PACKAGE_kmod-atm=m
+CONFIG_PACKAGE_kmod-atmtcp=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-batman[^= ]* --- --- --- #
@@ -509,12 +660,14 @@ CONFIG_PACKAGE_kmod-bonding=m
 
 # --- --- --- CONFIG_PACKAGE_kmod-crypto[^= ]* --- --- --- #
 CONFIG_PACKAGE_kmod-cryptodev=m
+CONFIG_PACKAGE_kmod-crypto-acompress=m
 CONFIG_PACKAGE_kmod-crypto-aead=m
 CONFIG_PACKAGE_kmod-crypto-arc4=m
 CONFIG_PACKAGE_kmod-crypto-authenc=m
 CONFIG_PACKAGE_kmod-crypto-cbc=m
 CONFIG_PACKAGE_kmod-crypto-ccm=m
 CONFIG_PACKAGE_kmod-crypto-cmac=m
+CONFIG_PACKAGE_kmod-crypto-crc32=m
 CONFIG_PACKAGE_kmod-crypto-crc32c=m
 CONFIG_PACKAGE_kmod-crypto-ctr=m
 CONFIG_PACKAGE_kmod-crypto-cts=m
@@ -534,6 +687,7 @@ CONFIG_PACKAGE_kmod-crypto-hw-geode=m
 CONFIG_PACKAGE_kmod-crypto-hw-hifn-795x=m
 CONFIG_PACKAGE_kmod-crypto-hw-padlock=m
 CONFIG_PACKAGE_kmod-crypto-hw-talitos=m
+CONFIG_PACKAGE_kmod-crypto-kpp=m
 CONFIG_PACKAGE_kmod-crypto-manager=m
 CONFIG_PACKAGE_kmod-crypto-md4=m
 CONFIG_PACKAGE_kmod-crypto-md5=m
@@ -544,6 +698,7 @@ CONFIG_PACKAGE_kmod-crypto-pcbc=m
 CONFIG_PACKAGE_kmod-crypto-pcompress=m
 CONFIG_PACKAGE_kmod-crypto-rmd160=m
 CONFIG_PACKAGE_kmod-crypto-rng=m
+CONFIG_PACKAGE_kmod-crypto-rsa=m
 CONFIG_PACKAGE_kmod-crypto-seqiv=m
 CONFIG_PACKAGE_kmod-crypto-sha1=m
 CONFIG_PACKAGE_kmod-crypto-sha256=m
@@ -553,6 +708,7 @@ CONFIG_PACKAGE_kmod-crypto-user=m
 CONFIG_PACKAGE_kmod-crypto-wq=m
 CONFIG_PACKAGE_kmod-crypto-xcbc=m
 CONFIG_PACKAGE_kmod-crypto-xts=m
+CONFIG_PACKAGE_kmod-crypto-zstd=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-dns[^= ]* --- --- --- #
@@ -632,6 +788,8 @@ CONFIG_PACKAGE_kmod-ipip=m
 
 # --- --- --- CONFIG_PACKAGE_kmod-ipsec[^= ]* --- --- --- #
 CONFIG_PACKAGE_kmod-ipsec=m
+CONFIG_PACKAGE_kmod-ipsec4=m
+CONFIG_PACKAGE_kmod-ipsec6=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-ipt-[^= ]* --- --- --- #
@@ -706,7 +864,13 @@ CONFIG_PACKAGE_kmod-lib-crc32c=m
 CONFIG_PACKAGE_kmod-lib-crc-ccitt=m
 CONFIG_PACKAGE_kmod-lib-crc-itu-t=m
 CONFIG_PACKAGE_kmod-lib-lz4=m
+CONFIG_PACKAGE_kmod-lib-lz4hc=m
+CONFIG_PACKAGE_kmod-lib-lzo=m
+CONFIG_PACKAGE_kmod-lib-raid6=m
 CONFIG_PACKAGE_kmod-lib-textsearch=m
+CONFIG_PACKAGE_kmod-lib-xor=m
+CONFIG_PACKAGE_kmod-lib-zlib-deflate=m
+CONFIG_PACKAGE_kmod-lib-zlib-inflate=m
 CONFIG_PACKAGE_kmod-lib-zstd=m
 
 
@@ -741,6 +905,8 @@ CONFIG_PACKAGE_kmod-nf-flow=m
 CONFIG_PACKAGE_kmod-nf-ipt=m
 CONFIG_PACKAGE_kmod-nf-ipt6=m
 CONFIG_PACKAGE_kmod-nf-ipvs=m
+CONFIG_PACKAGE_kmod-nf-ipvs-ftp=m
+CONFIG_PACKAGE_kmod-nf-ipvs-sip=m
 CONFIG_PACKAGE_kmod-nf-reject=m
 CONFIG_PACKAGE_kmod-nf-reject6=m
 
@@ -770,6 +936,7 @@ CONFIG_PACKAGE_kmod-nls-utf8=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-rxrpc[^= ]* --- --- --- #
+CONFIG_PACKAGE_kmod-rxrpc=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-sched[^= ]* --- --- --- #
@@ -802,6 +969,28 @@ CONFIG_PACKAGE_kmod-sit=m
 
 # --- --- --- CONFIG_PACKAGE_kmod-sound[^= ]* --- --- --- #
 CONFIG_PACKAGE_kmod-sound-core=m
+CONFIG_PACKAGE_kmod-sound-dummy=m
+CONFIG_PACKAGE_kmod-sound-ens1371=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-analog=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-ca0110=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-ca0132=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-cirrus=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-cmedia=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-conexant=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-hdmi=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-idt=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-realtek=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-si3054=m
+CONFIG_PACKAGE_kmod-sound-hda-codec-via=m
+CONFIG_PACKAGE_kmod-sound-hda-core=m
+CONFIG_PACKAGE_kmod-sound-i8x0=m
+CONFIG_PACKAGE_kmod-sound-mpu401=m
+CONFIG_PACKAGE_kmod-sound-mt7620=m
+CONFIG_PACKAGE_kmod-sound-seq=m
+CONFIG_PACKAGE_kmod-sound-soc-ac97=m
+CONFIG_PACKAGE_kmod-sound-soc-core=m
+CONFIG_PACKAGE_kmod-sound-soc-spdif=m
+CONFIG_PACKAGE_kmod-sound-via82xx=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-usb[^= ]* --- --- --- #
@@ -813,10 +1002,15 @@ CONFIG_PACKAGE_kmod-usbip-server=m
 CONFIG_PACKAGE_kmod-usbmon=m
 CONFIG_PACKAGE_kmod-usb-acm=m
 CONFIG_PACKAGE_kmod-usb-atm=m
+CONFIG_PACKAGE_kmod-usb-atm-cxacru=m
+CONFIG_PACKAGE_kmod-usb-atm-speedtouch=m
+CONFIG_PACKAGE_kmod-usb-atm-ueagle=m
+CONFIG_PACKAGE_kmod-usb-audio=m
 CONFIG_PACKAGE_kmod-usb-cm109=m
 CONFIG_PACKAGE_kmod-usb-core=m
 CONFIG_PACKAGE_kmod-usb-dwc2=m
 CONFIG_PACKAGE_kmod-usb-dwc3=m
+CONFIG_PACKAGE_kmod-usb-ehci=m
 CONFIG_PACKAGE_kmod-usb-hid=m
 CONFIG_PACKAGE_kmod-usb-hid-cp2112=m
 CONFIG_PACKAGE_kmod-usb-net=m
@@ -846,6 +1040,29 @@ CONFIG_PACKAGE_kmod-usb-ohci=m
 CONFIG_PACKAGE_kmod-usb-ohci-pci=m
 CONFIG_PACKAGE_kmod-usb-printer=m
 CONFIG_PACKAGE_kmod-usb-serial=m
+CONFIG_PACKAGE_kmod-usb-serial-ark3116=m
+CONFIG_PACKAGE_kmod-usb-serial-belkin=m
+CONFIG_PACKAGE_kmod-usb-serial-ch341=m
+CONFIG_PACKAGE_kmod-usb-serial-cp210x=m
+CONFIG_PACKAGE_kmod-usb-serial-cypress-m8=m
+CONFIG_PACKAGE_kmod-usb-serial-dmx_usb_module=m
+CONFIG_PACKAGE_kmod-usb-serial-edgeport=m
+CONFIG_PACKAGE_kmod-usb-serial-ftdi=m
+CONFIG_PACKAGE_kmod-usb-serial-garmin=m
+CONFIG_PACKAGE_kmod-usb-serial-ipw=m
+CONFIG_PACKAGE_kmod-usb-serial-keyspan=m
+CONFIG_PACKAGE_kmod-usb-serial-mct=m
+CONFIG_PACKAGE_kmod-usb-serial-mos7720=m
+CONFIG_PACKAGE_kmod-usb-serial-mos7840=m
+CONFIG_PACKAGE_kmod-usb-serial-option=m
+CONFIG_PACKAGE_kmod-usb-serial-oti6858=m
+CONFIG_PACKAGE_kmod-usb-serial-pl2303=m
+CONFIG_PACKAGE_kmod-usb-serial-qualcomm=m
+CONFIG_PACKAGE_kmod-usb-serial-sierrawireless=m
+CONFIG_PACKAGE_kmod-usb-serial-simple=m
+CONFIG_PACKAGE_kmod-usb-serial-ti-usb=m
+CONFIG_PACKAGE_kmod-usb-serial-visor=m
+CONFIG_PACKAGE_kmod-usb-serial-xr_usb_serial_common=m
 CONFIG_PACKAGE_kmod-usb-storage=m
 CONFIG_PACKAGE_kmod-usb-storage-extras=m
 CONFIG_PACKAGE_kmod-usb-storage-uas=m
@@ -871,6 +1088,7 @@ CONFIG_PACKAGE_kmod-wireguard=m
 
 # --- --- --- CONFIG_PACKAGE_kmod[^= ]*ip[^= ]*4[^= ]* --- --- --- #
 CONFIG_PACKAGE_kmod-ebtables-ipv4=m
+CONFIG_PACKAGE_kmod-iptunnel4=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod[^= ]*ip[^= ]*6[^= ]* --- --- --- #
@@ -878,6 +1096,7 @@ CONFIG_PACKAGE_kmod-ebtables-ipv6=m
 CONFIG_PACKAGE_kmod-ip6tables=m
 CONFIG_PACKAGE_kmod-ip6tables-extra=m
 CONFIG_PACKAGE_kmod-ip6-tunnel=m
+CONFIG_PACKAGE_kmod-ip6-vti=m
 CONFIG_PACKAGE_kmod-iptunnel6=m
 
 
@@ -896,7 +1115,10 @@ CONFIG_PACKAGE_kmod-nft-queue=m
 
 
 # --- --- --- CONFIG_PACKAGE_kmod[^= ]*tun[^= ]* --- --- --- #
+CONFIG_PACKAGE_kmod-iptunnel=m
 CONFIG_PACKAGE_kmod-tun=m
+CONFIG_PACKAGE_kmod-udptunnel4=m
+CONFIG_PACKAGE_kmod-udptunnel6=m
 
 
 # --- --- --- ~ The following core packages are available for manual installation ~ --- --- --- #
@@ -916,6 +1138,7 @@ CONFIG_PACKAGE_dnstop=m
 CONFIG_PACKAGE_getop=m
 CONFIG_PACKAGE_htop=m
 CONFIG_PACKAGE_iftop=m
+CONFIG_PACKAGE_libmosquittop=m
 CONFIG_PACKAGE_luabitop=m
 CONFIG_PACKAGE_netatop=m
 CONFIG_PACKAGE_netop=m
@@ -989,6 +1212,7 @@ CONFIG_PACKAGE_luci-proto-gre=m
 CONFIG_PACKAGE_luci-proto-hnet=m
 CONFIG_PACKAGE_luci-proto-ipip=m
 CONFIG_PACKAGE_luci-proto-ipv6=m
+CONFIG_PACKAGE_luci-proto-ncm=m
 CONFIG_PACKAGE_luci-proto-openconnect=m
 CONFIG_PACKAGE_luci-proto-openfortivpn=m
 CONFIG_PACKAGE_luci-proto-ppp=m
@@ -1007,10 +1231,61 @@ CONFIG_PACKAGE_pciutils=m
 
 # --- --- --- CONFIG_PACKAGE_procps-ng[^= ]* --- --- --- #
 CONFIG_PACKAGE_procps-ng=m
+CONFIG_PACKAGE_procps-ng-free=m
+CONFIG_PACKAGE_procps-ng-kill=m
+CONFIG_PACKAGE_procps-ng-pgrep=m
+CONFIG_PACKAGE_procps-ng-pkill=m
+CONFIG_PACKAGE_procps-ng-pmap=m
+CONFIG_PACKAGE_procps-ng-ps=m
+CONFIG_PACKAGE_procps-ng-pwdx=m
+CONFIG_PACKAGE_procps-ng-skill=m
+CONFIG_PACKAGE_procps-ng-slabtop=m
+CONFIG_PACKAGE_procps-ng-snice=m
+CONFIG_PACKAGE_procps-ng-sysctl=m
+CONFIG_PACKAGE_procps-ng-tload=m
+CONFIG_PACKAGE_procps-ng-top=m
+CONFIG_PACKAGE_procps-ng-uptime=m
+CONFIG_PACKAGE_procps-ng-vmstat=m
+CONFIG_PACKAGE_procps-ng-w=m
+CONFIG_PACKAGE_procps-ng-watch=m
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-[^= ]* --- --- --- #
+CONFIG_PACKAGE_shadow-chage=m
+CONFIG_PACKAGE_shadow-chfn=m
+CONFIG_PACKAGE_shadow-chgpasswd=m
+CONFIG_PACKAGE_shadow-chpasswd=m
+CONFIG_PACKAGE_shadow-chsh=m
+CONFIG_PACKAGE_shadow-common=m
+CONFIG_PACKAGE_shadow-expiry=m
+CONFIG_PACKAGE_shadow-faillog=m
+CONFIG_PACKAGE_shadow-gpasswd=m
+CONFIG_PACKAGE_shadow-groupadd=m
+CONFIG_PACKAGE_shadow-groupdel=m
+CONFIG_PACKAGE_shadow-groupmems=m
+CONFIG_PACKAGE_shadow-groupmod=m
+CONFIG_PACKAGE_shadow-groups=m
+CONFIG_PACKAGE_shadow-grpck=m
+CONFIG_PACKAGE_shadow-grpconv=m
+CONFIG_PACKAGE_shadow-grpunconv=m
+CONFIG_PACKAGE_shadow-lastlog=m
+CONFIG_PACKAGE_shadow-login=m
+CONFIG_PACKAGE_shadow-logoutd=m
+CONFIG_PACKAGE_shadow-newgidmap=m
+CONFIG_PACKAGE_shadow-newgrp=m
+CONFIG_PACKAGE_shadow-newuidmap=m
+CONFIG_PACKAGE_shadow-newusers=m
+CONFIG_PACKAGE_shadow-nologin=m
+CONFIG_PACKAGE_shadow-passwd=m
+CONFIG_PACKAGE_shadow-pwck=m
+CONFIG_PACKAGE_shadow-pwconv=m
+CONFIG_PACKAGE_shadow-pwunconv=m
+CONFIG_PACKAGE_shadow-su=m
+CONFIG_PACKAGE_shadow-useradd=m
+CONFIG_PACKAGE_shadow-userdel=m
+CONFIG_PACKAGE_shadow-usermod=m
 CONFIG_PACKAGE_shadow-utils=m
+CONFIG_PACKAGE_shadow-vipw=m
 
 
 # --- --- --- CONFIG_PACKAGE_tcpdump[^= ]* --- --- --- #
@@ -1030,6 +1305,8 @@ CONFIG_PACKAGE_unbound-host=m
 # --- --- --- CONFIG_PACKAGE_usb[^= ]* --- --- --- #
 CONFIG_PACKAGE_usbids=m
 CONFIG_PACKAGE_usbip=m
+CONFIG_PACKAGE_usbip-client=m
+CONFIG_PACKAGE_usbip-server=m
 CONFIG_PACKAGE_usbmuxd=m
 CONFIG_PACKAGE_usb-modeswitch=m
 
@@ -1058,6 +1335,7 @@ CONFIG_PACKAGE_ca-certificates=y
 
 
 # --- --- --- CONFIG_PACKAGE_chrt --- --- --- #
+CONFIG_PACKAGE_chrt=y
 
 
 # --- --- --- CONFIG_PACKAGE_ethtool --- --- --- #
@@ -1101,6 +1379,7 @@ CONFIG_PACKAGE_kmod-fs-msdos=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-io-schedulers --- --- --- #
+CONFIG_PACKAGE_kmod-io-schedulers=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-usb-net-asix[^= ]* --- --- --- #
@@ -1131,6 +1410,7 @@ CONFIG_PACKAGE_luci-app-commands=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-compressed-memory --- --- --- #
+CONFIG_PACKAGE_luci-app-compressed-memory=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-nlbwmon --- --- --- #
@@ -1178,21 +1458,27 @@ CONFIG_PACKAGE_openssh-sftp-server=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-chsh --- --- --- #
+CONFIG_PACKAGE_shadow-chsh=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-groupadd --- --- --- #
+CONFIG_PACKAGE_shadow-groupadd=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-groupdel --- --- --- #
+CONFIG_PACKAGE_shadow-groupdel=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-nologin --- --- --- #
+CONFIG_PACKAGE_shadow-nologin=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-useradd --- --- --- #
+CONFIG_PACKAGE_shadow-useradd=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-userdel --- --- --- #
+CONFIG_PACKAGE_shadow-userdel=y
 
 
 # --- --- --- CONFIG_PACKAGE_shadow-utils --- --- --- #
@@ -1233,6 +1519,7 @@ CONFIG_PACKAGE_kmod-usb-serial=y
 
 
 # --- --- --- CONFIG_PACKAGE_kmod-usb-serial-option --- --- --- #
+CONFIG_PACKAGE_kmod-usb-serial-option=y
 
 
 # --- --- --- CONFIG_PACKAGE_luci-app-mwan3 --- --- --- #
