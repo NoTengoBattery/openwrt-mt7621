@@ -1,0 +1,23 @@
+# This file will contain some mount points that may not be present in all
+# targets. They are harmless, you can delete them in LuCI or remove them from
+# the file if you don't want them.
+
+config global
+	option anon_swap	'0'
+	option anon_mount	'0'
+	option auto_swap	'1'
+	option auto_mount	'1'
+	option delay_root	'1'
+	option check_fs		'1'
+
+# This sample 'initial' file will setup the "extra" partition as overlay
+# instead of the partition that OpenWrt uses by default, which is a partition
+# appended at the end of the firmware image. "extra" partition is the larger
+# partition in the device. It can be an internal MMC, NAND or SD card.
+config mount
+	option enabled		'1'
+	option target		'/overlay'
+
+config mount
+	option enabled		'1'
+	option target		'/bootfs'
